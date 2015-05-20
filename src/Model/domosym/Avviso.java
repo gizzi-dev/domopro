@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package Model.domosym;
 
-import java.util.ArrayList;
+import model.backyard.Evento;
 
 /**
  *
  * @author Gianmarco
  */
-public interface Contesto extends Collocazione{
-    
-    public ArrayList<Risorsa> getRisorseFornite();
+public class Avviso {
+    private Evento evento;
+    private String testo;
 }

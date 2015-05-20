@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -65,6 +66,11 @@ public class AzioneComplessa extends Azione {
     
     public ArrayList<Azione> getSottoazioni(){
         return this.sottoazioni;
+    }
+    
+    @Override
+    public AzioneComplessa getAsComplessa(){
+        return this;
     }
 
     

@@ -5,10 +5,10 @@
  */
 package backyard.gui;
 
-import Model.Risorsa;
-import Model.ScenarioSimulazione;
-import Model.Collocazione;
-import Model.Contesto;
+import model.backyard.Risorsa;
+import model.backyard.ScenarioSimulazione;
+import model.backyard.Collocazione;
+import model.backyard.Contesto;
 import java.awt.CardLayout;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
@@ -317,7 +317,7 @@ public class GestioneRisorseDialog extends javax.swing.JDialog {
 		 */
 		// @EXAMPLES T2/T3:
         // boolean eliminato = BackYardCtrl.eliminaRisorsa(ris);
-		boolean eliminato = true; //myScenario.eliminaRisorsa(ris);
+		boolean eliminato = myScenario.eliminaRisorsa(ris);
 
 		// Aggiornamento view
 		if (eliminato) {

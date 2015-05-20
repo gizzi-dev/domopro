@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 /**
  *
  * @author Gianmarco
  */
-public interface Importabile extends Cloneable {
-    
-    public Importabile clone();
+public enum tipoDispositivo {
+    HOME,ASSIST,REHAB
 }

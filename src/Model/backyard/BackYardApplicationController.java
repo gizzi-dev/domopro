@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 import java.sql.SQLException;
 import java.util.ArrayList;
 /**
@@ -80,8 +80,8 @@ public class BackYardApplicationController {
     }
     
     
-    public ArrayList<InfoScenario> duplicaScenario(InfoScenario scInfo,String nuovoNome) throws Exception{
-        if(!this.controllaNomeSCenario(nuovoNome)) throw new Exception();
+    public ArrayList<InfoScenario> duplicaScenario(InfoScenario scInfo,String nuovoNome) {
+        if(this.controllaNomeSCenario(nuovoNome)) return null;
         this.elencoScenari.add(scInfo.duplica(nuovoNome));
         return this.elencoScenari;
     }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 import java.util.ArrayList;
 
@@ -84,11 +84,15 @@ public class Risorsa {
     }
 
     public void setlimiteTot(int limitetot) {
-        this.nome=nome;
+        this.limiteTotale=limitetot;
     }
 
     public void setRinnovo(int rinnovo) {
         this.giorniRinnovo= rinnovo;
+    }
+    
+    public boolean usata(){
+        return this.utilizzataDa.size()!= 0;
     }
     
     public String toString(){

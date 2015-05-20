@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public abstract class Azione {
      * @param azione1
      * @param azione2 
      */
-    private void shallowReplace(Azione azione1,Azione azione2){
+    public void shallowReplace(Azione azione1,Azione azione2){
         for(Azione sottoAz: getSottoAzioni()){
             if(azione1.equals(azione2)){
                int index = this.getSottoAzioni().indexOf(azione1);
@@ -57,6 +57,10 @@ public abstract class Azione {
     
     public void setNome(String nome){
         this.nome = nome;        
+    }
+    
+    public ArrayList<AzioneComplessa> getUsataIn(){
+        return this.usataIn;
     }
     
     public String getNome(){
@@ -115,27 +119,7 @@ public abstract class Azione {
      * Coverte l'azione in AzioneComplessa creando un altro oggetto se necessario
      * @return 
      */
-    public AzioneComplessa getAsComplessa(){
-        if(this instanceof AzioneComplessa) return (AzioneComplessa)this;
-        else if(this instanceof AzioneSemplice){
-            AzioneComplessa az = new AzioneComplessa(this.nome);
-            az.setDispositivo(this.dispositivo);
-            az.setDurata(this.durata);
-            az.setEventi(this.eventi);
-            az.setProgrammabilita(this.programmabile);
-            az.setUtilizzoRisorse(this.utilizzoRisorse);
-            az.setUsataIn(this.usataIn);
-            for(Azione azi: this.usataIn){
-                azi.shallowReplace(this, az);
-            }
-            for(Entry<Risorsa,Double> ris: this.utilizzoRisorse.entrySet()){
-                ris.getKey().removeUtilizzo(az);                
-                ris.getKey().addUtilizzo(az);               
-            }
-            return az;
-        }   
-        return null;
-    }
+    public abstract AzioneComplessa getAsComplessa();
     
     /**
      * Converte l'azione in AzioneSemplice creando un altro oggetto se necessario

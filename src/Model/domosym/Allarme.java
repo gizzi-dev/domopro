@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package Model.domosym;
+
+import model.backyard.Evento;
 
 /**
  *
  * @author Gianmarco
  */
-public enum tipoDispositivo {
-    HOME,ASSIST,REHAB
+public class Allarme {
+    private Evento evento;
+    private String testo;
 }

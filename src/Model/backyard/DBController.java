@@ -1,11 +1,6 @@
-package Model;
+package model.backyard;
 import java.sql.Connection;
-import org.apache.derby.jdbc.ClientDriver;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 
 import java.sql.DriverManager;
@@ -70,11 +65,10 @@ public class DBController {
     public void openConnect(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            this.con = DriverManager.getConnection(url,username,password);  
-            //System.out.println("connesso");
+            this.con = DriverManager.getConnection(url,username,password);              
         }
         catch (ClassNotFoundException | SQLException ex) {
-            System.err.println(ex);
+            System.err.println("Impossibile Connettersi al DB!\n"+ex);
         }
         
     }

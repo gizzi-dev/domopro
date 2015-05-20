@@ -5,7 +5,7 @@
  */
 package DomoPro;
 
-import Model.DBController;
+import model.backyard.DBController;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

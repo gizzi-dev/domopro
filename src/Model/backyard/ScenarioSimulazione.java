@@ -1,6 +1,6 @@
 
 
-package Model;
+package model.backyard;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,6 +55,8 @@ public class ScenarioSimulazione {
     }
     
     private ScenarioSimulazione(InfoScenario info,boolean salvato){
+        this.nome=info.getNome();
+        this.autore = info.getAutore();
         this.salvato = true;       
         this.dispositivi = new ArrayList<DispositivoIntelligente>();        
         this.info=info;  
@@ -161,11 +163,13 @@ public class ScenarioSimulazione {
                            + "'"+this.info.getId()+"')");
                 }
                 //Relazione tra azioni
+                int i=0;
                 for(Azione sottoaz: az.getSottoAzioni()){
-                    query.add("INSERT INTO relazioneaz (nomeAzC,nomeAzS,idScenario) VALUES "
+                    query.add("INSERT INTO relazioneaz (nomeAzC,nomeAzS,idScenario,posizione) VALUES "
                            + "('"+az.getNome()+"',"
                            + "'"+sottoaz.getNome()+"',"                          
-                           + "'"+this.info.getId()+"')");
+                           + "'"+this.info.getId()+"',"
+                            + "'"+(i++)+"')");
                 }
             }
             //Risorse fornite dal dispositivo
@@ -184,10 +188,10 @@ public class ScenarioSimulazione {
     
     
     /*
-        popolo con i risultati alloggio
-        *Qui si deve creare l'alloggio e quindi caricare gli oggetti che lo compongono, luoghi, risorse) l'operazione
-        richiede diverse invocazioni la cui struttura è tuttavia ripetitiva.
-        */
+    popolo con i risultati alloggio
+    *Qui si deve creare l'alloggio e quindi caricare gli oggetti che lo compongono, luoghi, risorse) l'operazione
+    richiede diverse invocazioni la cui struttura è tuttavia ripetitiva.
+    */
     public void loadAlloggio(){
         try {            
             String[] query = this.buildQueryLoadAlloggio();
@@ -228,22 +232,22 @@ public class ScenarioSimulazione {
                         boolean alloggio = risultati.getBoolean("idAlloggio");
                         String nomePiano = risultati.getString("nomePiano");
                         String nomeStanza= risultati.getString("nomeStanza");                        
-                        Contesto cont = null;
-                        if(alloggio) cont = this.planimetria;
+                        Collocazione coll = null;
+                        if(alloggio) coll = this.planimetria;
                         else if(this.controllaNomePiano(nome)){
                             for(Piano piano: getPiani()){
-                                if(piano.getNome().equals(nomePiano)) cont = (Contesto) piano;
+                                if(piano.getNome().equals(nomePiano)) coll = (Collocazione) piano;
                             }
                         }
                         else{
                             for(Piano piano: getPiani()){
                                 for(Stanza stanza: piano.getStanze()){
-                                    if(stanza.getNome().equals(nomeStanza))cont = (Contesto) stanza;
+                                    if(stanza.getNome().equals(nomeStanza))coll = (Collocazione) stanza;
                                 }
                             }
                         }
-                        if(cont !=null){                            
-                            Risorsa ris = this.creaRisorsa(nome, limite, limitetot, giorniRinnovo, cont);                        
+                        if(coll !=null){                            
+                            Risorsa ris = this.creaRisorsa(nome, limite, limitetot, giorniRinnovo, coll);                        
                            // if(cont instanceof Alloggio) ((Alloggio)cont).addRisorsa(ris);
                            // else if(cont instanceof Piano) ((Piano)cont).addRisorsa(ris);
                             //else if(cont instanceof Stanza) ((Stanza)cont).addRisorsa(ris);
@@ -628,10 +632,11 @@ public class ScenarioSimulazione {
      * @param piano
      * @return 
      */
-    public boolean importaPiano(Piano piano){
-        for(Piano p: this.getPiani()){
-            if(!this.controllaLivelloPiano(piano.getLivello())) return false;
-        }        
+    public boolean importaPiano(Piano piano){        
+        if(this.controllaLivelloPiano(piano.getLivello())) return false;
+        for(Piano p: getPiani()){
+            if(p.getNome().equals(piano.getNome())) return false;
+        }
         return this.planimetria.addPiano(piano);
     }    
     
@@ -676,8 +681,10 @@ public class ScenarioSimulazione {
         return p.getStanza(nome);
     }
     
-    public boolean modificaPiano(Piano piano,String nome, int lvl) {        
-        if((piano == null || lvl < 0 || this.controllaNomePiano(nome) || this.controllaLivelloPiano(lvl)))return false ;
+    public boolean modificaPiano(Piano piano,String nome, int lvl) {  
+        if(piano == null || lvl < 0 ) return false;
+        if(this.controllaNomePiano(nome)&& !(piano.getNome().equals(nome))) return false;
+        if(this.controllaLivelloPiano(lvl) && (piano.getLivello()!= lvl))return false ;        
         piano.setNome(nome);
         piano.setLivello(lvl);
         this.setSalvato(false);
@@ -773,6 +780,16 @@ public class ScenarioSimulazione {
             if(disp.getNome().equals(nome)) return disp;
         }
         return null;
+    }
+    
+    public boolean eliminaRisorsa(Risorsa ris){
+        if(ris.usata()) return false;
+        else{
+            Collocazione c = ris.getCollocazione();
+            c.removeRisorsa(ris);
+            ris.setCollocazione(null);
+            return true;
+        }
     }
     
     public String toString(){

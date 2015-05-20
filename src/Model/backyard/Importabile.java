@@ -3,17 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
-
-import java.util.ArrayList;
+package model.backyard;
 
 /**
  *
  * @author Gianmarco
  */
-public class DISemplice extends DispositivoIntelligente{
+public interface Importabile extends Cloneable {
     
-    public DISemplice(String nome){
-        super(nome);
-    }
+    public Importabile clone();
 }

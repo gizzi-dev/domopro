@@ -5,16 +5,16 @@
  */
 package backyard.gui;
 
-import Model.Alloggio;
-import Model.ScenarioSimulazione;
-import Model.UserInfo;
-import Model.InfoScenario;
-import Model.Importabile;
-import Model.Stanza;
-import Model.DispositivoIntelligente;
-import Model.BackYardApplicationController;
-import Model.Contesto;
-import Model.Piano;
+import model.backyard.Alloggio;
+import model.backyard.ScenarioSimulazione;
+import model.backyard.UserInfo;
+import model.backyard.InfoScenario;
+import model.backyard.Importabile;
+import model.backyard.Stanza;
+import model.backyard.DispositivoIntelligente;
+import model.backyard.BackYardApplicationController;
+import model.backyard.Contesto;
+import model.backyard.Piano;
 import java.awt.CardLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;

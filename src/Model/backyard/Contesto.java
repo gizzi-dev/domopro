@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
+
+import java.util.ArrayList;
 
 /**
  *
  * @author Gianmarco
  */
-public enum tipoUtente {
-    TECNICO,INQUILINO,OPERATORE
+public interface Contesto extends Collocazione{
+    
+    public ArrayList<Risorsa> getRisorseFornite();
 }

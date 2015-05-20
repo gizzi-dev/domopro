@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 /**
  *
  * @author Gianmarco
  */
-public class AzioneSemplice extends Azione {
-    
-    public AzioneSemplice(String nome){
-        super(nome);
-    }
-    
+public enum tipoUtente {
+    TECNICO,INQUILINO,OPERATORE
 }

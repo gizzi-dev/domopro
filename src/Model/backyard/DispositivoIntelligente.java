@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +48,10 @@ public abstract class DispositivoIntelligente implements Contesto , Importabile,
     
     public void setNome(String nome){
         this.nome = nome;
+    }
+    
+    public ArrayList<DIComplesso> getUsatoIn(){
+        return this.usatoIn;
     }
     
     public String getNome(){
@@ -261,32 +265,10 @@ public abstract class DispositivoIntelligente implements Contesto , Importabile,
      * Trasforma il dispositovo
      * @return 
      */
-    public DIComplesso getAsComplesso(){
-        if(this instanceof DIComplesso) return (DIComplesso)this;
-        DIComplesso disp2 = new DIComplesso(this.nome);
-        disp2.setTipo(this.tipo);
-        disp2.setDove(this.dove);        
-        for(DispositivoIntelligente d: this.usatoIn){
-            ((DIComplesso)d).shallowReplace(this,disp2);
-        }
-        for(Azione az:this.azioni){
-            az.setDispositivo(disp2);
-        }
-        return disp2;
-    }
-    
+    public abstract DIComplesso getAsComplesso()  ;   
     
     //
-    public DISemplice getAsSemplice(){
-        if(this instanceof DISemplice) return (DISemplice)this;
-        DISemplice disp = new DISemplice(this.nome);
-        disp.setTipo(this.tipo);
-        disp.setDove(this.dove);
-        for(Azione az: this.azioni){
-            az.setDispositivo(disp);
-        }
-        return disp;       
-    }
+    public abstract DISemplice getAsSemplice();
     
     public boolean inLuogo(Luogo luogo){
         return (luogo==null) ? false : this.dove.equals(luogo);
@@ -336,5 +318,9 @@ public abstract class DispositivoIntelligente implements Contesto , Importabile,
         }
         this.removeSottoDispositivo(sottoDisp);
         return true;
+    }
+    
+    public tipoDispositivo getTipo(){
+        return this.tipo;
     }
 }

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 
-import static Model.BackYardApplicationController.getAppController;
+import static model.backyard.BackYardApplicationController.getAppController;
 import java.util.ArrayList;
 
 /**
@@ -94,6 +94,24 @@ public class DIComplesso extends DispositivoIntelligente {
         evento.setAbilitato(abilitaz);
         getAppController().getScenarioCorrente().setSalvato(false);
     }
+    
+    public DISemplice getAsSemplice(){        
+        DISemplice disp = new DISemplice(this.getNome());
+        disp.setTipo(this.getTipo());
+        disp.setDove(this.getLuogo());
+        for(Azione az: this.getAzioni()){
+            az.setDispositivo(disp);
+        }
+        return disp;       
+    }
+
+    @Override
+    public DIComplesso getAsComplesso() {
+        return this;
+    }
+    
+    
+     
                 
     
 }

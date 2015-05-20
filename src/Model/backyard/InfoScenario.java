@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package model.backyard;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,25 +62,28 @@ public class InfoScenario {
     private String[] buildQueryDuplica(int id,int newId){
         String [] s = new String[10];       
         s[0]="INSERT INTO alloggio (idScenario) SELECT '"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[1]="INSERT INTO azione (nome,durata,programmabile,nomeDisp,idScenario) SELECT 'nome,durata,programmabile,nomeDisp,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[2]="INSERT INTO dispositivo (nome,tipo,nomeAlloggio,nomePiano,nomeStanza,idScenario) SELECT 'nome,tipo,nomeAlloggio,nomePiano,nomeStanza,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[3]="INSERT INTO evento (nome,abilitato,allarme,idAzione,idScenario) SELECT 'nome,abilitato,allarme,idAzione,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[4]="INSERT INTO piano (nome,idAlloggio,livello,idScenario) SELECT 'nome,idAlloggio,livello,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[5]="INSERT INTO relazioneaz (nomeAzC,nomeAzS,idScenario) SELECT 'nomeAzC,nomeAzS,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[6]="INSERT INTO relazionedisp (nomeCom,nomeSot,idScenario) SELECT 'nomeCom,nomeSot,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[7]="INSERT INTO risorsa (nome,limite,limiteTot,giorniRinnovo,idAlloggio,nomePiano,nomeStanza,nomeDisp,idScenario) SELECT 'nome,limite,limiteTot,giorniRinnovo,idAlloggio,nomePiano,nomeStanza,nomeDisp,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[8]="INSERT INTO stanza (nome,nomePiano,idScenario,idScenario) SELECT 'nome,nomePiano,idScenario,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
-        s[9]="INSERT INTO utilizzoris (nomeAzione,nomeDisp,nomeRis,val,idScenario) SELECT 'nomeAzione,nomeDisp,nomeRis,val,"+newId+"' FROM alloggio WHERE idScenario = '"+id+"'";
+        s[1]="INSERT INTO azione (nome,durata,programmabile,nomeDisp,idScenario) SELECT nome,durata,programmabile,nomeDisp,"+newId+" FROM azione WHERE idScenario = '"+id+"'";
+        s[2]="INSERT INTO dispositivo (nome,tipo,nomeAlloggio,nomePiano,nomeStanza,idScenario) SELECT nome,tipo,nomeAlloggio,nomePiano,nomeStanza,"+newId+" FROM dispositivo WHERE idScenario = '"+id+"'";
+        s[3]="INSERT INTO evento (nome,abilitato,allarme,idAzione,idScenario) SELECT nome,abilitato,allarme,idAzione,"+newId+" FROM evento WHERE idScenario = '"+id+"'";
+        s[4]="INSERT INTO piano (nome,livello,idScenario) SELECT nome,livello,"+newId+" FROM piano WHERE idScenario = '"+id+"'";
+        s[5]="INSERT INTO relazioneaz (nomeAzC,nomeAzS,idScenario) SELECT nomeAzC,nomeAzS,"+newId+" FROM relazioneaz WHERE idScenario = '"+id+"'";
+        s[6]="INSERT INTO relazionedisp (nomeCom,nomeSot,idScenario) SELECT nomeCom,nomeSot,"+newId+" FROM relazionedisp WHERE idScenario = '"+id+"'";
+        s[7]="INSERT INTO risorsa (nome,limite,limiteTot,giorniRinnovo,idAlloggio,nomePiano,nomeStanza,nomeDisp,idScenario) SELECT nome,limite,limiteTot,giorniRinnovo,idAlloggio,nomePiano,nomeStanza,nomeDisp,"+newId+" FROM risorsa WHERE idScenario = '"+id+"'";
+        s[8]="INSERT INTO stanza (nome,nomePiano,idScenario) SELECT nome,nomePiano,"+newId+" FROM stanza WHERE idScenario = '"+id+"'";
+        s[9]="INSERT INTO utilizzoris (nomeAzione,nomeDisp,nomeRis,val,idScenario) SELECT nomeAzione,nomeDisp,nomeRis,val,"+newId+" FROM utilizzoris WHERE idScenario = '"+id+"'";
         return s;
     }
     
     public InfoScenario duplica(String nuovoNome){
         String query = this.buildQueryCrea(nuovoNome, BackYardApplicationController.getAppController().getUtente());
         int newId = BackYardApplicationController.getDBController().executeInsert(query);
-        String []query2 = this.buildQueryDuplica(id, newId);
-        for(int i=0;i<query2.length;i++)
-            BackYardApplicationController.getDBController().executeUpdate(query2[i]);
-        return new InfoScenario(newId,nuovoNome,this.getAutore());
+        if(newId>0){
+            String []query2 = this.buildQueryDuplica(id, newId);        
+            for(int i=0;i<query2.length;i++)
+                BackYardApplicationController.getDBController().executeUpdate(query2[i]);
+            return new InfoScenario(newId,nuovoNome,this.getAutore());
+        }
+        return null;
     }
     
     public void elimina(){

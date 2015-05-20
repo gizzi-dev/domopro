@@ -5,11 +5,11 @@
  */
 package backyard.gui;
 
-import Model.tipoUtente;
-import Model.ScenarioSimulazione;
-import Model.UserInfo;
-import Model.InfoScenario;
-import Model.BackYardApplicationController;
+import model.backyard.tipoUtente;
+import model.backyard.ScenarioSimulazione;
+import model.backyard.UserInfo;
+import model.backyard.InfoScenario;
+import model.backyard.BackYardApplicationController;
 import java.awt.CardLayout;
 import java.awt.Container;
 import java.sql.SQLException;
@@ -38,6 +38,7 @@ public class BackYard extends javax.swing.JFrame {
 	 * Creates new form BackYardMainWindow
 	 */
 	public BackYard() {
+                super("BackYard");
 		initComponents();
 		// Inizializzazione elementi di interfaccia
 		scenariListModel = new DefaultListModel<>();
