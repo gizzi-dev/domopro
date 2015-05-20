@@ -9,6 +9,14 @@ package Model.domosym;
  *
  * @author Gianmarco
  */
-public class Comandi {
-    private ProgrammaGenerico programma;
+public class ComandoProgramma extends Comando{
+    private Programma programma;
+
+   
+    public void salvaComando() {
+        
+    }
+    
+    
+    
 }

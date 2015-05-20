@@ -5,10 +5,37 @@
  */
 package Model.domosym;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Gianmarco
  */
 public class ProgrammaGenerico extends Programma implements AzioneComando{
+    private ArrayList<Comando> usatoDa;
+    
+    public ProgrammaGenerico(String nome) {
+        super(nome);
+        usatoDa = new ArrayList<>();
+    }
+
+  
+    
+    @Override
+    public boolean usato(){
+        return !this.usatoDa.isEmpty();
+    }
+
+    @Override
+    public void rimuoviDaComando(Comando com) {
+        this.usatoDa.remove(com);
+    }
+
+    @Override
+    public String buildQuerySalva() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     
 }

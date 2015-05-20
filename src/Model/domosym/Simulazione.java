@@ -146,5 +146,75 @@ public class Simulazione {
        this.salvato = b;
     }
 
+    public boolean controllaNomeProgramma(String nome){        
+        for(Programma p: this.programmi){            
+            if(p.getNome().equals(nome)) return true;
+        }
+        return false;
+    }
+    public boolean creaNuovoProgramma(String nomeProgramma, boolean tipo){
+        if( nomeProgramma.isEmpty() ||this.controllaNomeProgramma(nomeProgramma) ) return false;
+        Programma p = null;
+        if(tipo) p =new ProgrammaSpecifico(nomeProgramma);
+        else  p =new ProgrammaGenerico(nomeProgramma);
+        this.programmi.add(p);        
+        p.setSimulazione(this);
+        this.setSalvato(false);
+        return true;
+    }
     
+    public Programma apriProgramma(String nomeProgramma){
+        for(Programma p: this.programmi){
+            if(p.getNome().equals(nomeProgramma)) return p;
+        }
+        return null;
+    }
+    
+    public boolean aggiungiASimulazione(Programma p){        
+        if(p==null || p instanceof ProgrammaGenerico) return false;
+        this.simula.setAttivato(false);
+        this.simula = (ProgrammaSpecifico)p;
+        this.simula.setSalvato(false);
+        ((ProgrammaSpecifico)p).setAttivato(true);
+        this.setSalvato(false);
+        p.setSalvato(false);
+        return true;
+    }
+    
+    public boolean eliminaProgramma(String nomeProgramma){
+        Programma p = this.apriProgramma(nomeProgramma);
+        if(p == null || p.usato() ) return false;
+        p.elimina();
+        if(p.equals(this.simula)){
+            this.simula= null;
+            ((ProgrammaSpecifico)p).setAttivato(false);
+        }
+        setSalvato(false);
+        return true;
+    }
+    
+    public boolean modificaNomeProgramma(Programma p,String nome){
+        if(this.controllaNomeProgramma(nome)) return false;
+        p.setNome(nome);
+        p.setSalvato(false);
+        this.setSalvato(false);
+        return true;
+    }
+    
+    public ArrayList<Programma> ottieniElencoProgrammi(){
+        return this.programmi;
+    }
+    
+   
+    public static void main(String[] args){
+        //System.out.println("prova");
+        Simulazione s = new Simulazione();
+        s.creaNuovoProgramma("Gino", true);
+        s.creaNuovoProgramma("Ciccio", false);
+        for(Programma p: s.programmi){
+            System.out.println(p);
+        }
+        Programma p1 = s.apriProgramma("Ciccio");
+        
+    }
 }

@@ -9,9 +9,14 @@ package Model.domosym;
  *
  * @author Gianmarco
  */
-public interface AzioneComando {
+public class Comando {
+    private String nome;
+    private AzioneComando azCom;
     
     
-    public void rimuoviDaComando(Comando com);
+    public AzioneComando getAzioneComando(){
+        return this.azCom;
+    }
     
+   
 }
