@@ -352,7 +352,7 @@ public class ScenarioPanel extends javax.swing.JPanel {
 		}
 		if (option == JOptionPane.YES_OPTION) // se era gia' salvato o se l'utente ha detto si'
 		{
-			owner.chiudiScenario();
+			owner.chiudiScenario(evt);
 		}
     }//GEN-LAST:event_chiudiButtonActionPerformed
 

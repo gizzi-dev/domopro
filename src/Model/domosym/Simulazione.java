@@ -145,7 +145,7 @@ public class Simulazione {
     private void setSalvato(boolean b) {
        this.salvato = b;
     }
-
+        
     public boolean controllaNomeProgramma(String nome){        
         for(Programma p: this.programmi){            
             if(p.getNome().equals(nome)) return true;
@@ -182,9 +182,9 @@ public class Simulazione {
     }
     
     public boolean eliminaProgramma(String nomeProgramma){
-        Programma p = this.apriProgramma(nomeProgramma);
-        if(p == null || p.usato() ) return false;
-        p.elimina();
+        Programma p = this.apriProgramma(nomeProgramma);        
+        p.elimina();       
+        
         if(p.equals(this.simula)){
             this.simula= null;
             ((ProgrammaSpecifico)p).setAttivato(false);
@@ -201,11 +201,89 @@ public class Simulazione {
         return true;
     }
     
+    public void salvaProgramma(Programma p){
+        p.salvaProgramma();
+    }
+    
     public ArrayList<Programma> ottieniElencoProgrammi(){
         return this.programmi;
     }
     
-   
+    public boolean creaNuovoComando(String nomeComando,Programma prog){
+        if(controllaNomeComando(nomeComando,prog)) return false;
+        ComandoProgramma c = new ComandoProgramma(nomeComando);
+        prog.aggiungiComando(c);
+        c.setProgramma(prog);
+        c.setSalvato(false);
+        prog.setSalvato(false);       
+        return true;
+    }
+    
+    public boolean controllaNomeComando(String nomeComando,Programma prog){
+        for(ComandoProgramma com: prog.comandi){
+            if(com.getNome().equals(nomeComando)) return true;
+        }
+        return false;
+    }
+    
+    public ComandoProgramma apriComando(String nomeComando,Programma prog){
+        for(ComandoProgramma com: prog.comandi){
+            if(com.getNome().equals(nomeComando)) return com;
+        }
+        return null;
+    }
+    
+    public boolean aggiungiSottoprogramma(ComandoProgramma c, Programma sottop){
+        if(sottop instanceof ProgrammaSpecifico) return false;
+        c.setAzione((ProgrammaGenerico)sottop);
+        return true;
+    }
+    
+    public ArrayList<ComandoProgramma> ottieniElencoProgrammiSequenza(Programma p){
+        return p.comandi;
+    }
+    
+    public boolean cambiaNomeComando(ComandoProgramma c, String nuovoNome){
+        Programma p = c.getProgramma();
+        if(this.controllaNomeComando(nuovoNome,p)) return false;
+        c.setNome(nuovoNome);
+        c.setSalvato(false);
+        return true;
+    }
+    
+    public void salvaComando(ComandoProgramma c){
+        c.salvaComando();
+    }
+    
+    public ArrayList<ProgrammaGenerico> ottieniElencoProgrammiGenerici(){
+        ArrayList<ProgrammaGenerico> elenco = new ArrayList<>();
+        for(Programma p : this.programmi){
+            if(p.isGenerico()) elenco.add((ProgrammaGenerico)p);
+        }
+        return elenco;
+    }
+    
+    public boolean cancellaComando(String nomeComando,Programma p){        
+        ComandoProgramma com = this.apriComando(nomeComando, p);
+        if(com == null) return false;
+        p.eliminaComando(com);
+        return true;
+    }
+    
+    public boolean impostaDurata(ComandoProgramma com,int durata){
+        return com.modificaDurata(durata);
+    }
+    
+    public void impostaAzione(Comando com,AzioneComando az){
+        com.setAzione(az);
+    }
+    
+    
+    
+   /********************
+    * 
+    * @param args 
+    */
     public static void main(String[] args){
         //System.out.println("prova");
         Simulazione s = new Simulazione();

@@ -16,21 +16,14 @@ public abstract class Luogo implements Collocazione{
     public ArrayList<Risorsa> risorse;
     
     @Override
-    public void collectRisorseAccessibili(ArrayList<Risorsa> risorse){
-        
-    }
+    public abstract void collectRisorseAccessibili(ArrayList<Risorsa> risorse);
     
-    public ArrayList<Luogo> getLuoghi(){
-        return null;
-    }
+    public abstract ArrayList<Luogo> getLuoghi();     
     
-    public ArrayList<Risorsa> getRisorse(){
-        return null;
-    }
+    public abstract ArrayList<Risorsa> getRisorse();
     
-    public String getNome(){
-        return "";
-    }
+    public abstract String getNome();
+    
     
     
     

@@ -17,15 +17,14 @@ public class InfoScenario {
     private String nome;
     private int id;
     private UserInfo autore;
-    private ScenarioSimulazione scen; // come faccio ad arrivare agli scenari simulazione senza?
+    private ScenarioSimulazione scen;
     
     public InfoScenario(int id,String nome, UserInfo autore){
         this.nome =nome;
         this.id = id;
         this.autore= autore;        
-    }
-    
-    //da controllare
+    }    
+   
     public static ArrayList<InfoScenario> elencoScenari(UserInfo uInfo) throws SQLException{
         String query = buildQueryElenco(uInfo.getId());
         System.out.println(query);
@@ -107,9 +106,7 @@ public class InfoScenario {
     public int getId(){
         return this.id;
     }
-    /*
-    prima creo la entri nella tabella degli scenari; una volta ottenuto l'id vado a salvare le altre informazioni(ossia i contenuti dello scenario)
-    */
+    
     public String buildQueryCrea(String nuovoNome, UserInfo utente) {
         return "INSERT INTO scenario (nome, idAutore) VALUES ('"+nuovoNome+"','"+utente.getId()+"')";
     }

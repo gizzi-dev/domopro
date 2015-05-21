@@ -9,11 +9,6 @@ package Model.domosym;
  *
  * @author Gianmarco
  */
-public interface AzioneComando {
-    
-    
-    public void rimuoviDaComando(Comando com);
-    
-    public boolean setDurata(int durata);
+public interface CondizioneAttivazione {
     
 }

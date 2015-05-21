@@ -14,8 +14,7 @@ import java.util.List;
  * @author Gianmarco
  */
 public class Alloggio extends Luogo implements Contesto {    
-    private ArrayList<Piano> piani;    
-    //private ArrayList<Risorsa> risorseFornite;//elenco di oggetti Risorsa che può contenere: tutte le risorse associate alla planimetria di s e ai dispositivi di s
+    private ArrayList<Piano> piani;       
     
     public Alloggio(){
         piani = new ArrayList<Piano>(); 
@@ -38,9 +37,7 @@ public class Alloggio extends Luogo implements Contesto {
         return piani;
     }
 
-    /*
-    raccolgo tutte le risorse dell'alloggio e gli aggiungo anche quelle fornite dai dispositivi?! o solo quelle dei dispositivi?
-    */
+   
     @Override
     public ArrayList<Risorsa> getRisorseFornite() {
        ArrayList<Risorsa> ris = new ArrayList<Risorsa>();

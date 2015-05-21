@@ -62,9 +62,25 @@ public class DIComplesso extends DispositivoIntelligente {
     }
     
     public boolean removeSottoDispositivo(DispositivoIntelligente disp){
-        sottodispositivi.remove(disp);
-        BackYardApplicationController.getAppController().getScenarioCorrente().setSalvato(false);
+       boolean usato = false;
+        for(Azione az: this.getAzioni()){
+            if(!az.isMacroazione()) usato = false;
+            for(Azione sottoAz: az.getSottoAzioni()){
+                if(sottoAz.usaDispositivo(disp)) usato = true;
+            }
+        }
+        if(!usato) return false;
+        this.sottodispositivi.remove(disp);
         return true;
+    }      
+
+    
+    public boolean isDIComplesso(){
+        return true;
+    }
+    
+    public ArrayList<DispositivoIntelligente> getSottoDispositivi(){        
+        return this.sottodispositivi;
     }
     
     
@@ -75,7 +91,7 @@ public class DIComplesso extends DispositivoIntelligente {
     * @param disp1
     * @param disp2 
     */
-    public void shallowReplace(DispositivoIntelligente disp1,DispositivoIntelligente disp2){
+    public void shallowReplace(DISemplice disp1,DIComplesso disp2){
         for(DispositivoIntelligente disp: this.getSottodispositivi()){
             if(disp.equals(disp1)){
                 int index = this.getSottodispositivi().indexOf(disp1);

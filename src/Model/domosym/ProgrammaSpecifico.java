@@ -24,7 +24,9 @@ public class ProgrammaSpecifico extends Programma{
         return attivato;
     }
     
-    
+    public  boolean isGenerico(){
+        return false;
+    }
     
     @Override
     public boolean usato(){

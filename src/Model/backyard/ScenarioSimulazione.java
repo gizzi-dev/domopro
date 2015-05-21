@@ -64,10 +64,9 @@ public class ScenarioSimulazione {
         else importo = this;        
     }
     
-    //da fare
+   
     private ArrayList<String> buildQuerySalva(int id){
-        ArrayList<String> s = new ArrayList<String>();  
-       // s.add("INSERT INTO alloggio (idScenario) VALUES('"+id+"')");
+        ArrayList<String> s = new ArrayList<String>();         
         s.addAll(this.salvaAlloggio());
         s.addAll(this.salvaDispositivi());        
         return s;

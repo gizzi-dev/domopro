@@ -19,7 +19,10 @@ public class ProgrammaGenerico extends Programma implements AzioneComando{
         usatoDa = new ArrayList<>();
     }
 
-  
+    
+    public  boolean isGenerico(){
+        return false;
+    }
     
     @Override
     public boolean usato(){
@@ -34,6 +37,10 @@ public class ProgrammaGenerico extends Programma implements AzioneComando{
     @Override
     public String buildQuerySalva() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public boolean setDurata(int durata){
+        return false;
     }
     
     

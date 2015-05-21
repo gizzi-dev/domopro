@@ -5,15 +5,15 @@
  */
 package Model.domosym;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
+import java.util.Date;
+
 /**
  *
  * @author Gianmarco
  */
-public interface AzioneComando {
-    
-    
-    public void rimuoviDaComando(Comando com);
-    
-    public boolean setDurata(int durata);
+public class Orario implements CondizioneAttivazione{
+    private Date data;
     
 }

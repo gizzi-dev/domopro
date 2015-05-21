@@ -18,7 +18,7 @@ public class DISemplice extends DispositivoIntelligente{
     }
     
     public DISemplice getAsSemplice(){
-        return (DISemplice)this;          
+        return this;          
     }
 
     @Override
@@ -33,5 +33,18 @@ public class DISemplice extends DispositivoIntelligente{
             az.setDispositivo(disp2);
         }
         return disp2;
+    }
+    
+    public boolean isDIComplesso(){
+        return false;
+    }
+    
+    public ArrayList<DispositivoIntelligente> getSottoDispositivi(){        
+       return null;
+    }
+
+    @Override
+    public boolean removeSottoDispositivo(DispositivoIntelligente sottoDisp) {
+        return false;
     }
 }

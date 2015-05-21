@@ -5,6 +5,7 @@
  */
 package model.backyard;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -33,8 +34,21 @@ public class AzioneSemplice extends Azione {
             ris.getKey().removeUtilizzo(az);                
             ris.getKey().addUtilizzo(az);               
         }
-        return az;
-      
+        return az;      
     }
+    
+    public AzioneSemplice getAsSemplice(){
+       return this;
+        
+    }
+    
+    public void shallowReplace(Azione azione1,Azione azione2){
+        
+    }
+    
+    public ArrayList<Azione> getSottoAzioni(){       
+        return null;
+    }  
+    
     
 }

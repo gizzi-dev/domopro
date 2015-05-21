@@ -52,9 +52,8 @@ public class Risorsa {
     }
     public Collocazione getCollocazione(){
         return this.collocazione;
-    }
+    }    
     
-    //da verificare
     public boolean aConsumo(){
         return giorniRinnovo>1;
     }

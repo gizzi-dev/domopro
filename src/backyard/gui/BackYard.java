@@ -404,7 +404,9 @@ public class BackYard extends javax.swing.JFrame {
 		this.scenariList.clearSelection();
 	}
 
-	void chiudiScenario() {
+	void chiudiScenario(java.awt.event.ActionEvent evt) {
 		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "ElencoScenari");
+		
+		this.okButtonActionPerformed(evt);
 	}
 }

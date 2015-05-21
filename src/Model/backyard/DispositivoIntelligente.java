@@ -86,9 +86,7 @@ public abstract class DispositivoIntelligente implements Contesto , Importabile,
         return usatoIn.size()==0; 
     }
     
-    public boolean isDIComplesso(){
-        return (this instanceof DIComplesso );
-    }
+    public abstract boolean isDIComplesso();
     
     public void setDove(Luogo dove){
         this.dove = dove;
@@ -98,14 +96,8 @@ public abstract class DispositivoIntelligente implements Contesto , Importabile,
         return this.azioni;
     }
     
-    public ArrayList<DispositivoIntelligente> getSottoDispositivi(){        
-        try{
-            return ((DIComplesso)this).getSottoDispositivi();
-        }
-        catch(ClassCastException e){
-            return new ArrayList<DispositivoIntelligente>();
-        }
-    }
+    public abstract ArrayList<DispositivoIntelligente> getSottoDispositivi();     
+        
     
     public Azione richiediDettagliAzione(String nomeAzione){
         for(Azione azione: azioni){
@@ -312,13 +304,7 @@ public abstract class DispositivoIntelligente implements Contesto , Importabile,
     }
     
    
-    public boolean removeSottoDispositivo(DispositivoIntelligente sottoDisp) {
-        for(Azione az: this.azioni){
-            if(az.usaDispositivo(sottoDisp)) return false;            
-        }
-        this.removeSottoDispositivo(sottoDisp);
-        return true;
-    }
+    public abstract boolean removeSottoDispositivo(DispositivoIntelligente sottoDisp);
     
     public tipoDispositivo getTipo(){
         return this.tipo;

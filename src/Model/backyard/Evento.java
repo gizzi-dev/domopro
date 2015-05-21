@@ -35,7 +35,7 @@ public class Evento {
     }
     public static Evento createTransitionEvent(Azione uno,Azione due,Azione tre){
         Evento ev =new Evento("Transition Event ("+uno.getNome()+") da "+due.getNome()+" a "+tre.getNome(),uno);
-        ev.setAzioni(uno, due, tre);
+        ev.setAzioni((AzioneComplessa)uno, due, tre);
         return ev;
     }
     
@@ -63,16 +63,18 @@ public class Evento {
          return due==azione1 && tre == azione2;
     }
     
-    //public void rename()//String??
+    
     public void setAbilitato(boolean val){
         this.abilitato = val;
     }
     
     public void setRisorsa(Risorsa ris){
-        
+        this.ris = ris;
     }
-    public void setAzioni(Azione uno,Azione due,Azione tre){
-        
+    public void setAzioni(AzioneComplessa uno,Azione due,Azione tre){
+        this.uno = uno;
+        this.due = due;
+        this.tre = tre;
     }
     
 }

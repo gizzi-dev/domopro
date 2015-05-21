@@ -9,13 +9,16 @@ package Model.domosym;
  *
  * @author Gianmarco
  */
-public class Comando {
-    private String nome;
-    private AzioneComando azCom;
+public class Comando {    
+    private AzioneComando azCom;        
     
     
     public AzioneComando getAzioneComando(){
         return this.azCom;
+    }         
+    
+    public void setAzione(AzioneComando az){
+        this.azCom = az;
     }
     
    

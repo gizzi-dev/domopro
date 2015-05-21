@@ -62,8 +62,6 @@ public class AzioneComplessa extends Azione {
         return true;
     } 
     
-    
-    
     public ArrayList<Azione> getSottoazioni(){
         return this.sottoazioni;
     }
@@ -72,6 +70,42 @@ public class AzioneComplessa extends Azione {
     public AzioneComplessa getAsComplessa(){
         return this;
     }
+    
+    public AzioneSemplice getAsSemplice(){        
+        AzioneSemplice az = new AzioneSemplice(this.getNome());
+        az.setDispositivo(this.getDispositivo());
+        az.setDurata(this.getDurata());
+        az.setProgrammabilita(this.getProgrammabile());
+        az.setUtilizzoRisorse(this.getUtilizzoRisorse());
+        for(Evento ev: this.getEventi()){
+            if(ev.isTransitionEvent()){
+                az.getEventi().remove(ev);
+            }
+        }
+        for(Azione ac: this.getUsataIn()){
+            this.shallowReplace(az, ac);
+        }    
+        for(Map.Entry<Risorsa,Double> ris: this.getUtilizzoRisorse().entrySet()){
+            ris.getKey().removeUtilizzo(az);                
+            ris.getKey().addUtilizzo(az);
+        }
+        return az;            
+    }
+    
+    public void shallowReplace(Azione azione1,Azione azione2){
+        for(Azione sottoAz: getSottoAzioni()){
+            if(azione1.equals(azione2)){
+               int index = this.getSottoAzioni().indexOf(azione1);
+               ((AzioneComplessa)this).removeSottoAzione(azione1);
+               ((AzioneComplessa)this).addSottoAzioneToPos(azione2, index);
+            }
+        }
+    }
+    
+    public ArrayList<Azione> getSottoAzioni(){       
+        return this.getSottoazioni();
+        
+    }  
 
     
 

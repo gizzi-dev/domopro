@@ -61,10 +61,28 @@ public abstract class Programma {
     }
     
     public void elimina(){
-        for(Comando c: this.comandi){
-            AzioneComando ac = c.getAzioneComando();
-            ac.rimuoviDaComando(c);
+        for(ComandoProgramma c: this.comandi){
+            c.elimina();            
         }
+        String query = this.buildQueryEliminaProgramma();
+        DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
+        this.setSalvato(true);
+    }
+    
+    public void eliminaComando(ComandoProgramma com){
+        this.comandi.remove(com);
+        com.elimina();
+        setSalvato(false);
+    }
+    
+    public void aggiungiComando(ComandoProgramma c){
+        this.comandi.add(c);
+    }
+    
+    public abstract boolean isGenerico();
+
+    private String buildQueryEliminaProgramma() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

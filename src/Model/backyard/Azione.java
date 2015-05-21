@@ -37,15 +37,7 @@ public abstract class Azione {
      * @param azione1
      * @param azione2 
      */
-    public void shallowReplace(Azione azione1,Azione azione2){
-        for(Azione sottoAz: getSottoAzioni()){
-            if(azione1.equals(azione2)){
-               int index = this.getSottoAzioni().indexOf(azione1);
-               ((AzioneComplessa)this).removeSottoAzione(azione1);
-               ((AzioneComplessa)this).addSottoAzioneToPos(azione2, index);
-            }
-        }
-    }
+    public abstract void shallowReplace(Azione azione1,Azione azione2);
     
     public boolean isSottoazione(){
         return !usataIn.isEmpty();
@@ -125,30 +117,7 @@ public abstract class Azione {
      * Converte l'azione in AzioneSemplice creando un altro oggetto se necessario
      * @return AzioneSemplice 
      */
-    public AzioneSemplice getAsSemplice(){
-        if(this instanceof AzioneSemplice)return (AzioneSemplice)this;
-        else if(this instanceof AzioneComplessa){
-            AzioneSemplice az = new AzioneSemplice(this.nome);
-            az.setDispositivo(this.dispositivo);
-            az.setDurata(this.durata);
-            az.setProgrammabilita(this.programmabile);
-            az.setUtilizzoRisorse(this.utilizzoRisorse);
-            for(Evento ev: this.eventi){
-                if(ev.isTransitionEvent()){
-                    az.getEventi().remove(ev);
-                }
-            }
-            for(Azione ac: this.usataIn){
-                this.shallowReplace(az, ac);
-            }    
-            for(Entry<Risorsa,Double> ris: this.utilizzoRisorse.entrySet()){
-                ris.getKey().removeUtilizzo(az);                
-                ris.getKey().addUtilizzo(az);
-            }
-            return az;            
-        }
-        return null;
-    }
+    public abstract AzioneSemplice getAsSemplice();
     
     
     public void setEventi(ArrayList<Evento> eventi) {
@@ -163,14 +132,7 @@ public abstract class Azione {
         this.usataIn = usataIn;
     }
     
-    public ArrayList<Azione> getSottoAzioni(){       
-        try{
-            return ((AzioneComplessa)this).getSottoazioni();
-        }
-        catch(ClassCastException e){
-            return new ArrayList<Azione>();
-        }
-    }    
+    public abstract ArrayList<Azione> getSottoAzioni();
     
     public ArrayList<Evento> getEventi(){
         return this.eventi;
