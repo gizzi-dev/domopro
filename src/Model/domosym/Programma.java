@@ -19,6 +19,11 @@ public abstract class Programma {
     
     public Programma(String nome){
         this.nome = nome;
+        comandi = new ArrayList<ComandoProgramma>();
+    }
+    
+    public Simulazione getSimulazione(){
+        return this.sim;
     }
     
     public void setNome(String nome){
@@ -37,12 +42,12 @@ public abstract class Programma {
         return this.nome;
     }
     
-    public boolean isSalvato(){
-        return this.salvato;
+    public ArrayList<ComandoProgramma> getComandi(){
+        return this.comandi;
     }
     
-    public boolean equals(Programma p){
-        return p.getNome().equals(this.nome);
+    public boolean isSalvato(){
+        return this.salvato;
     }
     
     public abstract boolean usato();

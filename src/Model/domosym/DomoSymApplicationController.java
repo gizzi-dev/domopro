@@ -6,6 +6,7 @@
 package Model.domosym;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import model.backyard.*;
 
 /**
@@ -13,17 +14,19 @@ import model.backyard.*;
  * @author Gianmarco
  */
 public class DomoSymApplicationController {
-    protected static DomoSymApplicationController appCtrl;
+    public static DomoSymApplicationController appCtrl;
     private Simulazione simCorrente;
     private static DBController dbController;
+    private UserInfo utente;
+    private ArrayList<InfoScenario> elencoScenari;
     
     
-    
-    
-    
-    
-    
-    
+    public DomoSymApplicationController(UserInfo uInfo){
+        this.appCtrl = this;
+        elencoScenari = new ArrayList<InfoScenario>();   
+        dbController = new DBController();
+        utente = uInfo;
+    }
     
     public DBController getDBController(){
         return this.dbController;
@@ -39,6 +42,26 @@ public class DomoSymApplicationController {
         Simulazione sim = Simulazione.load(scen);
         setSimCorrente(sim);
         return sim;        
-    }     
+    }  
+    
+    public ArrayList<InfoScenario> OttieniScenariDiSimulazione(UserInfo uInfo) throws SQLException{        
+        if(uInfo.checkInquilino()){
+            appCtrl.setUtente(uInfo);           
+            ArrayList<InfoScenario> elenco = InfoScenario.elencoScenariCompleto(uInfo);
+            System.out.println(elenco);
+            this.setElencoScenari(elenco);
+            return elenco;
+        }
+        return new ArrayList<InfoScenario>();
+    }
+    
+    public void setUtente(UserInfo uInfo){
+        this.utente = uInfo;
+    }
+    
+     
+    public void setElencoScenari(ArrayList<InfoScenario> elenco){
+        this.elencoScenari = elenco;
+    }
     
 }

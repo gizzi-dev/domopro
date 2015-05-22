@@ -2,6 +2,7 @@
 
 package model.backyard;
 
+import Model.domosym.DomoSymApplicationController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -196,7 +197,12 @@ public class ScenarioSimulazione {
             String[] query = this.buildQueryLoadAlloggio();
             //ResultSet[] risultati = new ResultSet[query.length];
             for(int i = 0;i<query.length;i++){
-                ResultSet risultati = BackYardApplicationController.getDBController().executeQuery(query[i]);               
+                ResultSet risultati = null;
+                try{
+                    risultati = BackYardApplicationController.getDBController().executeQuery(query[i]);    
+                }catch(Exception e){
+                    risultati = DomoSymApplicationController.appCtrl.getDBController().executeQuery(query[i]);    
+                }
                 if(i==0){
                     this.planimetria = new Alloggio();
                     this.planimetria.getPiani().remove(0);
@@ -272,7 +278,12 @@ public class ScenarioSimulazione {
             String[] query = this.buildQueryLoadDispositivi();            
             for(int i = 0;i<query.length;i++){
                 System.out.println(i);
-                ResultSet risultati = BackYardApplicationController.getDBController().executeQuery(query[i]);
+                ResultSet risultati = null;
+                try{
+                    risultati = BackYardApplicationController.getDBController().executeQuery(query[i]);    
+                }catch(Exception e){
+                    risultati = DomoSymApplicationController.appCtrl.getDBController().executeQuery(query[i]);    
+                }
                 while(risultati.next()){
                     if(i==0){
                         //Dispositivi

@@ -38,4 +38,9 @@ public class ProgrammaSpecifico extends Programma{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    public String toString(){
+        if(this.getSimulazione().simula != null && this.getSimulazione().simula.equals(this))
+            return "<html><b style='color:red'>"+this.getNome()+"(S)(ACTIVE)</b></html>";
+        else return "<html><b style='color:green'>"+this.getNome()+"(S)</b></html>";
+    }
 }

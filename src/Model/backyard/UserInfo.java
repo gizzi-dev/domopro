@@ -38,4 +38,8 @@ public class UserInfo {
     public boolean checkTecnico(){       
         return tipoutente.TECNICO.equals(this.tipoutente);        
     }
+    
+    public boolean checkInquilino(){       
+        return tipoutente.INQUILINO.equals(this.tipoutente);        
+    }
 }

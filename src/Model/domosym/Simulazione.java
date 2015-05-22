@@ -41,18 +41,27 @@ public class Simulazione {
     public static Simulazione load(ScenarioSimulazione scen) throws SQLException{
         Simulazione sim = new Simulazione();
         sim.setScenario(scen);
-        String query = sim.buildQueryGetId();
-        ResultSet r = DomoSymApplicationController.appCtrl.getDBController().executeQuery(query);
-        if(r.next()){
+        int idScen = scen.getInfoScenario().getId();
+        String query = sim.buildQueryGetId(idScen);
+        ResultSet r = DomoSymApplicationController.appCtrl.getDBController().executeQuery(query);        
+        if(r != null && r.next()){
             sim.loadId(r);
             sim.loadProgrammi();
         }      
         return sim;
     }
     
+    public ScenarioSimulazione getScenario(){
+        return this.scenario;
+    }
+    
     public void setScenario(ScenarioSimulazione scen){
         this.nome= "Simulazione di "+scen.getNome();
         this.scenario = scen;
+    }
+    
+    public boolean getSalvato(){
+        return this.salvato;
     }
     
     public void setId(int id){
@@ -65,8 +74,8 @@ public class Simulazione {
        
     }
     
-    public String buildQueryGetId(){
-        return "";        
+    public String buildQueryGetId(int idScen){
+        return "SELECT * FROM simulazione where idScenario = '"+idScen+"'";        
     }
     
     public void loadIscrizioni(){
@@ -95,6 +104,11 @@ public class Simulazione {
     
     public ProgrammaSpecifico getSimula(){
         return this.simula;
+    }
+    
+    public void setSimula(ProgrammaSpecifico prog){
+        if(prog.equals(simula)) this.simula = null;
+        else this.simula = prog;
     }
     
     public boolean attivaSimulazione(){
@@ -152,15 +166,15 @@ public class Simulazione {
         }
         return false;
     }
-    public boolean creaNuovoProgramma(String nomeProgramma, boolean tipo){
-        if( nomeProgramma.isEmpty() ||this.controllaNomeProgramma(nomeProgramma) ) return false;
+    public Programma creaNuovoProgramma(String nomeProgramma, boolean tipo){
+        if( nomeProgramma.isEmpty() ||this.controllaNomeProgramma(nomeProgramma) ) return null;
         Programma p = null;
         if(tipo) p =new ProgrammaSpecifico(nomeProgramma);
         else  p =new ProgrammaGenerico(nomeProgramma);
         this.programmi.add(p);        
         p.setSimulazione(this);
         this.setSalvato(false);
-        return true;
+        return p;
     }
     
     public Programma apriProgramma(String nomeProgramma){
@@ -184,11 +198,11 @@ public class Simulazione {
     public boolean eliminaProgramma(String nomeProgramma){
         Programma p = this.apriProgramma(nomeProgramma);        
         p.elimina();       
-        
+        this.programmi.remove(p);
         if(p.equals(this.simula)){
             this.simula= null;
             ((ProgrammaSpecifico)p).setAttivato(false);
-        }
+        }        
         setSalvato(false);
         return true;
     }
@@ -209,14 +223,14 @@ public class Simulazione {
         return this.programmi;
     }
     
-    public boolean creaNuovoComando(String nomeComando,Programma prog){
-        if(controllaNomeComando(nomeComando,prog)) return false;
+    public ComandoProgramma creaNuovoComando(String nomeComando,Programma prog){
+        if(controllaNomeComando(nomeComando,prog)) return null;
         ComandoProgramma c = new ComandoProgramma(nomeComando);
         prog.aggiungiComando(c);
         c.setProgramma(prog);
         c.setSalvato(false);
         prog.setSalvato(false);       
-        return true;
+        return c;
     }
     
     public boolean controllaNomeComando(String nomeComando,Programma prog){
@@ -234,7 +248,9 @@ public class Simulazione {
     }
     
     public boolean aggiungiSottoprogramma(ComandoProgramma c, Programma sottop){
-        if(sottop instanceof ProgrammaSpecifico) return false;
+        System.out.println(c);
+        System.out.println(sottop);
+        if(sottop == null || sottop instanceof ProgrammaSpecifico || c.getProgramma().equals(sottop)) return false;        
         c.setAzione((ProgrammaGenerico)sottop);
         return true;
     }
@@ -259,6 +275,7 @@ public class Simulazione {
         ArrayList<ProgrammaGenerico> elenco = new ArrayList<>();
         for(Programma p : this.programmi){
             if(p.isGenerico()) elenco.add((ProgrammaGenerico)p);
+            System.out.println(elenco);
         }
         return elenco;
     }
@@ -278,21 +295,25 @@ public class Simulazione {
         com.setAzione(az);
     }
     
-    
-    
-   /********************
-    * 
-    * @param args 
-    */
-    public static void main(String[] args){
-        //System.out.println("prova");
-        Simulazione s = new Simulazione();
-        s.creaNuovoProgramma("Gino", true);
-        s.creaNuovoProgramma("Ciccio", false);
-        for(Programma p: s.programmi){
-            System.out.println(p);
+    public ArrayList<Evento> ottieniListaEventi(){        
+        ArrayList<Evento> elenco = new ArrayList<>();
+        ArrayList<DispositivoIntelligente> dispositivi = this.scenario.getDispositivi();
+        for(DispositivoIntelligente disp: dispositivi){
+            elenco.addAll(disp.richiediEventiDisponibili());
         }
-        Programma p1 = s.apriProgramma("Ciccio");
-        
+        return elenco;
     }
+
+    public ArrayList<AzioneComando> getAzioniComandoDisponibili() {        
+        ArrayList<AzioneComando> azioni = new ArrayList<>();
+        for(ProgrammaGenerico prog : this.ottieniElencoProgrammiGenerici()){
+            azioni.add((AzioneComando)prog);
+        }
+        return azioni;
+    }
+
+  
+    
+    
+  
 }

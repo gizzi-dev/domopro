@@ -21,7 +21,7 @@ public class ProgrammaGenerico extends Programma implements AzioneComando{
 
     
     public  boolean isGenerico(){
-        return false;
+        return true;
     }
     
     @Override
@@ -43,6 +43,12 @@ public class ProgrammaGenerico extends Programma implements AzioneComando{
         return false;
     }
     
+    public String toString(){        
+        return this.getNome();                
+    }
     
+    public int getDurata(){
+        return 0;
+    }
     
 }

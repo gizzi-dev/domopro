@@ -5,6 +5,7 @@
  */
 package model.backyard;
 
+import Model.domosym.DomoSymApplicationController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,6 +30,19 @@ public class InfoScenario {
         String query = buildQueryElenco(uInfo.getId());
         System.out.println(query);
         ResultSet risultati = BackYardApplicationController.getDBController().executeQuery(query);
+        ArrayList<InfoScenario> elenco = new ArrayList<InfoScenario>();
+        while (risultati.next()) {
+            String id = risultati.getString("id");
+            String name = risultati.getString("nome");           
+            elenco.add(new InfoScenario(Integer.parseInt(id),name,uInfo));
+        }
+        return elenco; 
+    }
+    
+     public static ArrayList<InfoScenario> elencoScenariCompleto(UserInfo uInfo) throws SQLException{
+        String query = "SELECT * FROM scenario WHERE 1";
+        System.out.println(query);
+        ResultSet risultati = DomoSymApplicationController.appCtrl.getDBController().executeQuery(query);
         ArrayList<InfoScenario> elenco = new ArrayList<InfoScenario>();
         while (risultati.next()) {
             String id = risultati.getString("id");

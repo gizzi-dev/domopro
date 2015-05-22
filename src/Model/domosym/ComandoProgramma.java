@@ -37,9 +37,10 @@ public class ComandoProgramma extends Comando{
     
     public void elimina(){
         this.programma = null;
-        this.getAzioneComando().rimuoviDaComando(this);
+        if(this.getAzioneComando() != null)
+            this.getAzioneComando().rimuoviDaComando(this);
         String query = this.buildQueryEliminaComando();
-        DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
+        //DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
         setSalvato(true);
     }
     
@@ -51,18 +52,26 @@ public class ComandoProgramma extends Comando{
         this.cond = cond;
     }
     
+    public CondizioneAttivazione getCondizione(){
+        return this.cond;
+    }
+    
     public void setNome(String nome){
         this.nome = nome;
     }
 
     private String buildQueryEliminaComando() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return "";
     }
     
     public boolean modificaDurata(int durata){
         if(!this.getAzioneComando().setDurata(durata)) return false;
         this.setSalvato(false);
         return true;
+    }
+    
+    public String toString(){
+        return this.nome;
     }
     
 }
