@@ -6,12 +6,19 @@
 package domosym.gui;
 
 import Model.domosym.AzioneComando;
+import Model.domosym.Orario;
 import java.awt.PopupMenu;
 import java.sql.Time;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import javafx.scene.chart.PieChart.Data;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import model.backyard.Evento;
 
@@ -28,6 +35,8 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         super(parent,true);
         initComponents();
         value = JOptionPane.CANCEL_OPTION;  
+        this.setDurata(0);
+        this.setOrario("00:00:00");        
     }
     
     public int getValue()
@@ -57,25 +66,39 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
     }
     
     public int getDurata(){
-        return Integer.parseInt(this.durataTextField.getText());
+        try{
+            return Integer.parseInt(this.durataTextField.getText());
+        }catch(NumberFormatException e){
+            return -1;
+        }
     }
     
     public void setDurata(int durata){
         this.durataTextField.setText(""+durata);
     }
     
-    public Time getOrario(){
-        return Time.valueOf(this.orarioFormattedTextField.getText());
+    public Orario getOrario(){
+        if(!this.orarioRadioButton.isSelected()) return null;   
+        String testo =this.orarioFormattedTextField.getText();
+        try{
+            if(testo.length() == 8)return new Orario(testo);
+            return null;
+        }
+        catch(StringIndexOutOfBoundsException e){
+            return null;
+        }
     }
     
-    public void setOrario(Time ora){
+    public void setOrario(String ora){
         this.eventoRadioButton.setSelected(false);
         this.orarioRadioButton.setSelected(true);
         this.eventoComboBox.setEnabled(false);
-        this.orarioFormattedTextField.setText(ora.toString());
+        this.orarioFormattedTextField.setText(ora);
+       
     }
     
     public Evento getEvento(){
+        if(!this.eventoRadioButton.isSelected()) return null;
         return (Evento)this.eventoComboBox.getSelectedItem();
     }
     
@@ -91,6 +114,10 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         for(Evento ev :eventi){
             this.eventoComboBox.addItem(ev);
         }
+    }
+    
+    public boolean isOraro(){
+        return this.orarioRadioButton.isSelected();
     }
     
     
@@ -125,7 +152,7 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         orarioRadioButton = new javax.swing.JRadioButton();
         eventoComboBox = new javax.swing.JComboBox();
         orarioFormattedTextField = new javax.swing.JFormattedTextField();
-        jButton1 = new javax.swing.JButton();
+        salvaButton = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -148,8 +175,8 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(nameLabel)
-                .addGap(34, 34, 34)
-                .addComponent(nameTextField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -173,9 +200,9 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(actionLabel)
-                .addGap(31, 31, 31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(actionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,7 +214,7 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        durataLabel.setText("Durata");
+        durataLabel.setText("Durata(Minuti)");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -265,10 +292,10 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Salva");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        salvaButton.setText("Salva");
+        salvaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                salvaButtonActionPerformed(evt);
             }
         });
 
@@ -291,7 +318,7 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(salvaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(79, 79, 79))
         );
         jPanel1Layout.setVerticalGroup(
@@ -306,7 +333,7 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(salvaButton)
                 .addContainerGap())
         );
 
@@ -348,9 +375,11 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         this.eventoRadioButton.setSelected(false);
     }//GEN-LAST:event_orarioRadioButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void salvaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvaButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        this.value = JOptionPane.OK_OPTION;
+        this.setVisible(false);
+    }//GEN-LAST:event_salvaButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -402,7 +431,6 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
     private javax.swing.JTextField durataTextField;
     private javax.swing.JComboBox eventoComboBox;
     private javax.swing.JRadioButton eventoRadioButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
@@ -418,5 +446,6 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
     private javax.swing.JTextField nameTextField;
     private javax.swing.JFormattedTextField orarioFormattedTextField;
     private javax.swing.JRadioButton orarioRadioButton;
+    private javax.swing.JButton salvaButton;
     // End of variables declaration//GEN-END:variables
 }

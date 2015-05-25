@@ -70,7 +70,7 @@ public abstract class Programma {
             c.elimina();            
         }
         String query = this.buildQueryEliminaProgramma();
-        DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
+        //DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
         this.setSalvato(true);
     }
     
@@ -87,7 +87,7 @@ public abstract class Programma {
     public abstract boolean isGenerico();
 
     private String buildQueryEliminaProgramma() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
     
 }

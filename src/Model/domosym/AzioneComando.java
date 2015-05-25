@@ -14,7 +14,7 @@ public interface AzioneComando {
     
     public void rimuoviDaComando(Comando com);
     
-    public boolean setDurata(int durata);
+    public void setDurata(int durata);
 
     public int getDurata();
     

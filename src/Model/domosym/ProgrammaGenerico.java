@@ -13,10 +13,12 @@ import java.util.ArrayList;
  */
 public class ProgrammaGenerico extends Programma implements AzioneComando{
     private ArrayList<Comando> usatoDa;
+    private int durata;
     
     public ProgrammaGenerico(String nome) {
         super(nome);
         usatoDa = new ArrayList<>();
+        durata = 0;
     }
 
     
@@ -39,8 +41,8 @@ public class ProgrammaGenerico extends Programma implements AzioneComando{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public boolean setDurata(int durata){
-        return false;
+    public void setDurata(int durata){
+        this.durata = durata;
     }
     
     public String toString(){        
@@ -48,7 +50,8 @@ public class ProgrammaGenerico extends Programma implements AzioneComando{
     }
     
     public int getDurata(){
-        return 0;
+        return this.durata;
     }
+        
     
 }

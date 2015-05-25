@@ -29,8 +29,8 @@ public class ComandoProgramma extends Comando{
     
     public Programma getProgramma(){
         return this.programma;
-    }
-    
+    }   
+      
     public void salvaComando() {
         //se programma = null non lo salvo
     }
@@ -65,7 +65,8 @@ public class ComandoProgramma extends Comando{
     }
     
     public boolean modificaDurata(int durata){
-        if(!this.getAzioneComando().setDurata(durata)) return false;
+        if(durata <1) return false;
+        this.getAzioneComando().setDurata(durata);
         this.setSalvato(false);
         return true;
     }

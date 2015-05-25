@@ -5,11 +5,13 @@
  */
 package model.backyard;
 
+import Model.domosym.CondizioneAttivazione;
+
 /**
  *
  * @author Gianmarco
  */
-public class Evento {
+public class Evento implements CondizioneAttivazione{
     private String nome;
     private boolean abilitato;
     private boolean allarme;

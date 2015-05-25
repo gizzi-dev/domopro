@@ -208,7 +208,7 @@ public class Simulazione {
     }
     
     public boolean modificaNomeProgramma(Programma p,String nome){
-        if(this.controllaNomeProgramma(nome)) return false;
+        if(this.controllaNomeProgramma(nome) && !p.getNome().equals(nome)) return false;
         p.setNome(nome);
         p.setSalvato(false);
         this.setSalvato(false);
@@ -247,12 +247,9 @@ public class Simulazione {
         return null;
     }
     
-    public boolean aggiungiSottoprogramma(ComandoProgramma c, Programma sottop){
-        System.out.println(c);
-        System.out.println(sottop);
+    public boolean aggiungiSottoprogramma(ComandoProgramma c, Programma sottop){      
         if(sottop == null || sottop instanceof ProgrammaSpecifico || c.getProgramma().equals(sottop)) return false;        
-        c.setAzione((ProgrammaGenerico)sottop);
-        return true;
+        return this.impostaAzione(c, null);
     }
     
     public ArrayList<ComandoProgramma> ottieniElencoProgrammiSequenza(Programma p){
@@ -261,7 +258,7 @@ public class Simulazione {
     
     public boolean cambiaNomeComando(ComandoProgramma c, String nuovoNome){
         Programma p = c.getProgramma();
-        if(this.controllaNomeComando(nuovoNome,p)) return false;
+        if(this.controllaNomeComando(nuovoNome,p) && !c.getNome().equals(nuovoNome)) return false;
         c.setNome(nuovoNome);
         c.setSalvato(false);
         return true;
@@ -275,7 +272,6 @@ public class Simulazione {
         ArrayList<ProgrammaGenerico> elenco = new ArrayList<>();
         for(Programma p : this.programmi){
             if(p.isGenerico()) elenco.add((ProgrammaGenerico)p);
-            System.out.println(elenco);
         }
         return elenco;
     }
@@ -287,14 +283,19 @@ public class Simulazione {
         return true;
     }
     
-    public boolean impostaDurata(ComandoProgramma com,int durata){
-        return com.modificaDurata(durata);
+    public void impostaDurata(ComandoProgramma com,int durata){
+        com.modificaDurata(durata);
     }
     
-    public void impostaAzione(Comando com,AzioneComando az){
+    public boolean impostaAzione(ComandoProgramma com,AzioneComando az){        
         com.setAzione(az);
+        return true;
     }
     
+    public void impostaCondizioneAttivazione(ComandoProgramma com,CondizioneAttivazione cond){
+        com.setCondizione(cond);
+    }
+   
     public ArrayList<Evento> ottieniListaEventi(){        
         ArrayList<Evento> elenco = new ArrayList<>();
         ArrayList<DispositivoIntelligente> dispositivi = this.scenario.getDispositivi();

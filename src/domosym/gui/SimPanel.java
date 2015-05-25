@@ -19,7 +19,10 @@ import model.backyard.Contesto;
 import model.backyard.Piano;
 import java.awt.CardLayout;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -105,7 +108,6 @@ public class SimPanel extends javax.swing.JPanel {
         comandiList = new javax.swing.JList();
         javax.swing.JPanel comandiSP = new javax.swing.JPanel();
         nuovaStanzaButton = new javax.swing.JButton();
-        addGenericbutton = new javax.swing.JButton();
         eliminaStanzaButton = new javax.swing.JButton();
         modificaComandoButton = new javax.swing.JButton();
         dispositiviPanel = new javax.swing.JPanel();
@@ -229,14 +231,6 @@ public class SimPanel extends javax.swing.JPanel {
             }
         });
         comandiSP.add(nuovaStanzaButton);
-
-        addGenericbutton.setText("Aggiungi prog. Generico");
-        addGenericbutton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addGenericbuttonActionPerformed(evt);
-            }
-        });
-        comandiSP.add(addGenericbutton);
 
         eliminaStanzaButton.setText("Elimina");
         eliminaStanzaButton.addActionListener(new java.awt.event.ActionListener() {
@@ -435,7 +429,6 @@ public class SimPanel extends javax.swing.JPanel {
 				// All'inizio nessuna stanza e' selezionata, quindi i pulsanti relativi sono disabilitati
 				this.eliminaStanzaButton.setEnabled(false);
 				this.modificaComandoButton.setEnabled(false);
-                                this.addGenericbutton.setEnabled(false);
                                 
 				
 
@@ -450,15 +443,7 @@ public class SimPanel extends javax.swing.JPanel {
 		// Ottiene oggetto selezionato nell'elenco
 		Programma p = (Programma) programmiList.getSelectedValue();
 
-		/* @OPERATIONeliminaPiano
-		 * in base a come si è gestito il caso di piano che non si può eliminare, bisogna o catturare
-		 * l'eccezione o verificare il valore restituito dall'operazione. Qui in caso di valore restituito
-		 * pari a false (piano non eliminabile) viene visualizzato un messaggio di errore.		
-		 */
-		// @EXAMPLES T2/T3:
-		// boolean eliminato = BackYardCtrl.eliminaPiano(p);
-		 boolean eliminato = this.mySim.eliminaProgramma(p.getNome());
-
+		boolean eliminato = this.mySim.eliminaProgramma(p.getNome());                
 		// Aggiornamento view
 		if (eliminato) {
 			/* @MODELINTERACTION la vista richiama sull'oggetto ScenarioSimulazione
@@ -521,8 +506,7 @@ public class SimPanel extends javax.swing.JPanel {
 		if (!evt.getValueIsAdjusting()) {
 			int sel = comandiList.getSelectedIndex();
 			this.eliminaStanzaButton.setEnabled(sel >= 0);
-			this.modificaComandoButton.setEnabled(sel >= 0);	
-                        this.addGenericbutton.setEnabled(sel >= 0);
+			this.modificaComandoButton.setEnabled(sel >= 0);
 		}
     }//GEN-LAST:event_comandiListValueChanged
 
@@ -631,50 +615,57 @@ public class SimPanel extends javax.swing.JPanel {
                 ArrayList<AzioneComando> azioni = this.mySim.getAzioniComandoDisponibili();
                 dia.setAzioni(azioni);                
                 dia.setEventi(eventi);
-                //dia.setDurata(com.getAzioneComando().getDurata());
-               
-                //dia.setEvento(com.getCondizione());
-                dia.setAzioni(azioni);
+                if(com.getAzioneComando()!= null){
+                    dia.setDurata(com.getAzioneComando().getDurata());                
+                    if(com.getAzioneComando() instanceof Evento){
+                        dia.setEvento((Evento)com.getCondizione());                    
+                    }
+                    else{
+                        dia.setOrario(((Orario)com.getCondizione()).toString());
+                    }
+                }
 		dia.setVisible(true);
 
 		if (dia.getValue() == JOptionPane.OK_OPTION) { // L'utente ha premuto Ok
 
 			// Ottiene il nome inserito
 			String nome = dia.getNome();
-
-			if (nome.length() > 0) { // Il nome inserito e' non vuoto
-
-				// Ottiene la stanza selezionata
-				
-				/* @OPERATIONmodificaStanza
-				 * in base a come si è gestito il caso di nome non valido, bisogna o catturare
-				 * l'eccezione o verificare il valore restituito dall'operazione. In ogni
-				 * caso si può mostrare una message dialog analoga a quella che qui viene visualizzata quando l'utente
-				 * non inserisce NESSUN NOME.
-				 */
-
-				// @EXAMPLES T2/T3:
-				// boolean modificato = BackYardCtrl.modificaStanza(stanza,nome);
+                        //Ottengo l'azione
+                        AzioneComando az = dia.getAzione();
+                        //Ottengo la durata
+                        int durata = dia.getDurata();
+                        //Ottengo la condizione di attivazione
+                        Orario ora= dia.getOrario();
+                        Evento ev = dia.getEvento();
+                        
+			if (nome.length() > 0 && az != null && durata >0 && ora != null && (ora.validate() || ev!= null)) {                                
+                                                            
 				boolean modificato = mySim.cambiaNomeComando(com, nome);
-
-				if (modificato) // Alternativamente: se NON viene lanciata alcuna eccezione
-				{
-					/* @MODELINTERACTION la vista richiama sull'oggetto Piano
-					 * attualmente selezionato
-					 * il seguente metodo necessario al proprio aggiornamento 
-					 * - getStanze(): ArrayList<Stanza>
-					 */
-					// Ottiene il piano selezionato
+                                boolean modAzione = false;
+                                
+                                if(az instanceof ProgrammaGenerico) modAzione= mySim.aggiungiSottoprogramma(com,(ProgrammaGenerico)az);
+                                else modAzione= mySim.impostaAzione(com, az);
+                                
+                                if (modificato) {
+                                    if(modAzione){
+                                        mySim.impostaDurata(com, durata);      
+                                        if(dia.isOraro())
+                                            mySim.impostaCondizioneAttivazione(com, ora);
+                                        else mySim.impostaCondizioneAttivazione(com, ev);
+                                        
 					Programma p = (Programma) programmiList.getSelectedValue();
 					ArrayList<ComandoProgramma> comandi = p.getComandi();
 					this.aggiornaElencoComandi(comandi);
-
+                                        com.salvaComando();
+                                    }
+                                    else { // ALternativamente: se viene lanciata una eccezione
+					JOptionPane.showMessageDialog(this, "Non puoi aggiungere ad un comando di un programma, lo stesso programma", "Errore", JOptionPane.ERROR_MESSAGE);
+                                    }
 				} else { // ALternativamente: se viene lanciata una eccezione
-					JOptionPane.showMessageDialog(this, "Nome non disponibile", "Errore", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Nome non disponibile ", "Errore", JOptionPane.ERROR_MESSAGE);
 				}
-
-			} else { // Il nome inserito e' vuoto
-				JOptionPane.showMessageDialog(this, "Nome stanza non valido", "Errore", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(this, "Parametri non validi", "Errore", JOptionPane.ERROR_MESSAGE);
 			}
 		}
     }//GEN-LAST:event_modificaComandoButtonActionPerformed
@@ -821,29 +812,6 @@ public class SimPanel extends javax.swing.JPanel {
 		}
     }//GEN-LAST:event_dispositiviComboActionPerformed
 
-    private void addGenericbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addGenericbuttonActionPerformed
-        // TODO add your handling code here:
-        ArrayList<ProgrammaGenerico> progs = this.mySim.ottieniElencoProgrammiGenerici();       
-        addGenericDialog dia = new addGenericDialog(this.owner);
-        dia.setup(progs);
-        dia.setVisible(true);
-        if (dia.getValue() == JOptionPane.OK_OPTION) {
-            ProgrammaGenerico prog = dia.getProgramma();
-            ComandoProgramma com = (ComandoProgramma) comandiList.getSelectedValue();
-            
-            if(this.mySim.aggiungiSottoprogramma(com, prog)){
-                Programma p = (Programma) programmiList.getSelectedValue();
-                ArrayList<ComandoProgramma> comandi = p.getComandi();
-                this.aggiornaElencoComandi(comandi);
-            }
-            else{
-                JOptionPane.showMessageDialog(this, "Non puoi aggiungere il programma a se stesso", "Errore", JOptionPane.ERROR_MESSAGE);
-            }
-            
-        }
-        
-    }//GEN-LAST:event_addGenericbuttonActionPerformed
-
     private void attivaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attivaButtonActionPerformed
         // TODO add your handling code here:
         Programma p = (Programma) programmiList.getSelectedValue();
@@ -854,7 +822,6 @@ public class SimPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addGenericbutton;
     private javax.swing.JButton attivaButton;
     private javax.swing.JPanel blankPanel;
     private javax.swing.JButton chiudiButton;

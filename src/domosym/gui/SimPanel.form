@@ -343,14 +343,6 @@
                                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuovaStanzaButtonActionPerformed"/>
                                   </Events>
                                 </Component>
-                                <Component class="javax.swing.JButton" name="addGenericbutton">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Aggiungi prog. Generico"/>
-                                  </Properties>
-                                  <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addGenericbuttonActionPerformed"/>
-                                  </Events>
-                                </Component>
                                 <Component class="javax.swing.JButton" name="eliminaStanzaButton">
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="Elimina"/>
