@@ -5,10 +5,6 @@
  */
 package Model.domosym;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  *

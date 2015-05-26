@@ -20,7 +20,7 @@ public class ProgrammaSpecifico extends Programma{
         this.attivato = b;
     }
     
-    public boolean getAttivato(){
+    public boolean getAttivato(){        
         return attivato;
     }
     
@@ -35,7 +35,13 @@ public class ProgrammaSpecifico extends Programma{
 
     @Override
     public String buildQuerySalva() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "UPDATE programma SET nome='"+this.getNome()+"',idSimulazione='"+DomoSymApplicationController.appCtrl.getSimCorrente().getId()+"'"
+                + ",specifico='1',attivato='"+(this.attivato ? 1 : 0)+"' WHERE id="+this.getId();
+    }
+    
+    public String buildQuerySalvaInsert(){
+        return "INSERT INTO programma(nome,idSimulazione,specifico,attivato)"
+                + " VALUES ('"+this.getNome()+"','"+DomoSymApplicationController.appCtrl.getSimCorrente().getId()+"','1','"+(this.attivato ? 1 :0)+"')";
     }
     
     public String toString(){

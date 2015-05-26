@@ -65,7 +65,7 @@ public class ComandoProgramma extends Comando{
     }
     
     public boolean modificaDurata(int durata){
-        if(durata <1) return false;
+        if(durata <0) return false;
         this.getAzioneComando().setDurata(durata);
         this.setSalvato(false);
         return true;

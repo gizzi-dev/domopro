@@ -25,7 +25,7 @@ public class Simulazione {
     private boolean salvato;
     protected ArrayList<Programma> programmi;
     protected ProgrammaSpecifico simula;
-    private ArrayList<Iscrizione> dispIscritti;
+    private ArrayList<DispositivoIscritto> dispIscritti;
     protected Simulazione instanza;
     
     
@@ -35,18 +35,22 @@ public class Simulazione {
         this.programmi = new ArrayList<>();
         this.dispIscritti = new ArrayList<>();
         this.instanza = this;
+        this.id =-1;
     }
     
     public static Simulazione load(ScenarioSimulazione scen) throws SQLException{
         Simulazione sim = new Simulazione();
         sim.setScenario(scen);
         int idScen = scen.getInfoScenario().getId();
-        String query = sim.buildQueryGetId(idScen);
+        String query = sim.buildQueryLoad(idScen);
         ResultSet r = DomoSymApplicationController.appCtrl.getDBController().executeQuery(query);        
         if(r != null && r.next()){
             sim.loadId(r);
             sim.loadProgrammi();
-        }      
+           // sim.loadIscrizioni();
+            Programma p = sim.apriProgramma(r.getString("simula"));
+            if(p!= null) sim.setSimula((ProgrammaSpecifico) p);
+        }    
         return sim;
     }
     
@@ -54,6 +58,9 @@ public class Simulazione {
         return this.scenario;
     }
     
+    public int getId(){
+        return this.id;
+    }
     public void setScenario(ScenarioSimulazione scen){
         this.nome= "Simulazione di "+scen.getNome();
         this.scenario = scen;
@@ -73,11 +80,11 @@ public class Simulazione {
        
     }
     
-    public String buildQueryGetId(int idScen){
+    private String buildQueryLoad(int idScen){
         return "SELECT * FROM simulazione where idScenario = '"+idScen+"'";        
     }
     
-    public void loadIscrizioni(){
+    private void loadIscrizioni(){
         String q = this.BuildQueryLoadIscrizioni();
         ResultSet r = DomoSymApplicationController.appCtrl.getDBController().executeQuery(q);
         /*
@@ -85,16 +92,41 @@ public class Simulazione {
         */
     }
     
-    public void loadProgrammi(){
-        String q = this.BuildQueryLoadProgrammi();
-        ResultSet r = DomoSymApplicationController.appCtrl.getDBController().executeQuery(q);
-        /*
-        Popolo
-        */
+    private void loadProgrammi(){
+        String[] q = this.BuildQueryLoadProgrammi();
+        ResultSet r = null;
+        for(int i = 0; i <q.length;i++){
+            r= DomoSymApplicationController.appCtrl.getDBController().executeQuery(q[i]);
+            try{
+                while(r.next()){
+                    String nome = r.getString("nome");
+                    boolean attivato = r.getBoolean("attivato");
+                    boolean specifico = r.getBoolean("specifico");
+                    int id = r.getInt("id");
+                    Programma p;
+                    if(specifico){
+                        p = new ProgrammaSpecifico(nome);
+                        if(attivato){
+                            ((ProgrammaSpecifico)p).setAttivato(true);
+                            this.simula = (ProgrammaSpecifico)p;
+                        }
+                    }
+                    else p = new ProgrammaGenerico(nome);
+                    p.setId(id);
+                    p.setSimulazione(this);
+                    this.programmi.add(p);
+                }
+            }catch(SQLException e){
+                
+            }
+        }
+        
     }
 
-    private String BuildQueryLoadProgrammi() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private String[] BuildQueryLoadProgrammi() {
+        String [] query = new String [1];
+        query[0] = "SELECT * FROM programma WHERE idSimulazione='"+this.id+"'";
+        return query;
     }
 
     private String BuildQueryLoadIscrizioni() {
@@ -106,13 +138,16 @@ public class Simulazione {
     }
     
     public void setSimula(ProgrammaSpecifico prog){
-        if(prog.equals(simula)) this.simula = null;
-        else this.simula = prog;
+        if(prog.equals(simula)) 
+            this.simula = null;
+        else this.simula = prog;            
+        
     }
     
     public boolean attivaSimulazione(){
         if(this.getSimula() == null) return false;
         this.setModalita(true);
+        this.setSalvato(false);
         return true;
     }
     
@@ -123,7 +158,7 @@ public class Simulazione {
     
     public ArrayList<DispositivoIntelligente> ottieniListaDispIscritti(){
         ArrayList<DispositivoIntelligente> elenco = new ArrayList<>();
-        for(Iscrizione i: this.dispIscritti){
+        for(DispositivoIscritto i: this.dispIscritti){
             elenco.add(i.getDispositivo());
         }       
         return elenco;
@@ -141,7 +176,16 @@ public class Simulazione {
     
     public boolean salvaSimulazione(){
         if(salvato) return false;
-        String q = this.buildQuerySalva();
+        String q= "";
+        if(this.id == -1){
+            q = this.buildQuerySalvaInsert();
+            this.id = DomoSymApplicationController.appCtrl.getDBController().executeInsert(q);
+        }
+        else{
+            q = this.buildQuerySalva();
+            DomoSymApplicationController.appCtrl.getDBController().executeUpdate(q);
+        }
+        System.out.println("\n"+q+" - "+this.id);
         for(Programma p: this.programmi){
             p.salvaProgramma();
         }
@@ -153,7 +197,15 @@ public class Simulazione {
     }
 
     private String buildQuerySalva() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String s = "''";
+        if(this.simula != null) s = this.simula.getNome();
+        return "UPDATE simulazione SET modalita='"+(this.mod ? 1 : 0)+"',simula='"+s+"',idScenario='"+this.scenario.getInfoScenario().getId()+"' WHERE id='"+this.id+"'";
+    }
+    
+    private String buildQuerySalvaInsert(){
+        String s = "''";
+        if(this.simula != null) s = this.simula.getNome();
+        return "INSERT INTO simulazione(idScenario,modalita,simula) VALUES ('"+this.scenario.getInfoScenario().getId()+"','"+(this.mod ? 1 : 0)+"',"+s+")";
     }
 
     private void setSalvato(boolean b) {
@@ -190,6 +242,7 @@ public class Simulazione {
         this.simula = (ProgrammaSpecifico)p;
         this.simula.setSalvato(false);
         ((ProgrammaSpecifico)p).setAttivato(true);
+        this.setSimula((ProgrammaSpecifico)p);
         this.setSalvato(false);
         p.setSalvato(false);
         return true;
@@ -241,18 +294,18 @@ public class Simulazione {
     }
     
     public ComandoProgramma apriComando(String nomeComando,Programma prog){
-        for(ComandoProgramma com: prog.comandi){
+        for(ComandoProgramma com: prog.getComandi()){
             if(com.getNome().equals(nomeComando)) return com;
         }
         return null;
     }
     
-    public boolean aggiungiSottoprogramma(ComandoProgramma c, Programma sottop){      
-        if(sottop == null || sottop instanceof ProgrammaSpecifico || c.getProgramma().equals(sottop)) return false;        
-        return this.impostaAzione(c, null);
+    public boolean aggiungiSottoprogramma(ComandoProgramma c, ProgrammaGenerico sottop){      
+        if(sottop == null || c.getProgramma().equals(sottop)) return false;        
+        return this.impostaAzione(c, sottop);
     }
     
-    public ArrayList<ComandoProgramma> ottieniElencoProgrammiSequenza(Programma p){
+    public ArrayList<ComandoProgramma> ottieniElencoComandiSequenza(Programma p){
         return p.comandi;
     }
     
@@ -268,7 +321,7 @@ public class Simulazione {
         c.salvaComando();
     }
     
-    public ArrayList<ProgrammaGenerico> ottieniElencoProgrammiGenerici(){
+    public ArrayList<ProgrammaGenerico> richiediElencoProgrammiGenerici(){
         ArrayList<ProgrammaGenerico> elenco = new ArrayList<>();
         for(Programma p : this.programmi){
             if(p.isGenerico()) elenco.add((ProgrammaGenerico)p);
@@ -280,20 +333,24 @@ public class Simulazione {
         ComandoProgramma com = this.apriComando(nomeComando, p);
         if(com == null) return false;
         p.eliminaComando(com);
+        p.setSalvato(false);
         return true;
     }
     
     public void impostaDurata(ComandoProgramma com,int durata){
         com.modificaDurata(durata);
+        com.setSalvato(false);
     }
     
     public boolean impostaAzione(ComandoProgramma com,AzioneComando az){        
         com.setAzione(az);
+        com.setSalvato(false);
         return true;
     }
     
     public void impostaCondizioneAttivazione(ComandoProgramma com,CondizioneAttivazione cond){
         com.setCondizione(cond);
+        com.setSalvato(false);
     }
    
     public ArrayList<Evento> ottieniListaEventi(){        
@@ -306,7 +363,7 @@ public class Simulazione {
 
     public ArrayList<AzioneComando> getAzioniComandoDisponibili() {        
         ArrayList<AzioneComando> azioni = new ArrayList<>();
-        for(ProgrammaGenerico prog : this.ottieniElencoProgrammiGenerici()){
+        for(ProgrammaGenerico prog : this.richiediElencoProgrammiGenerici()){
             azioni.add((AzioneComando)prog);
         }
         return azioni;
@@ -314,20 +371,23 @@ public class Simulazione {
     
     public void aggiungiADispIscritti(String nomeDispositivo){
         DispositivoIntelligente disp = this.apriDispositivo(nomeDispositivo);
-        Iscrizione in = new Iscrizione(disp);
+        DispositivoIscritto in = new DispositivoIscritto(disp);
         this.dispIscritti.add(in);
+        this.setSalvato(false);
     }
     
     public void impostaAvvisi(DispositivoIntelligente disp, Evento ev){
-        for(Iscrizione in : this.dispIscritti){
+        for(DispositivoIscritto in : this.dispIscritti){
             if(in.getDispositivo().getNome().equals(disp.getNome())) in.impostaAvviso(ev);
         }
+        this.setSalvato(false);
     }
     
     public void impostaAllarmi(DispositivoIntelligente disp, Evento ev){
-       for(Iscrizione in : this.dispIscritti){
+        for(DispositivoIscritto in : this.dispIscritti){
             if(in.getDispositivo().getNome().equals(disp.getNome())) in.impostaAllarme(ev);
         }
+        this.setSalvato(false);
     }    
     
   

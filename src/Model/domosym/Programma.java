@@ -13,6 +13,7 @@ import java.util.ArrayList;
  */
 public abstract class Programma {
     private String nome;
+    private int id;
     private boolean salvato;
     protected ArrayList<ComandoProgramma> comandi;
     private Simulazione sim;
@@ -20,10 +21,20 @@ public abstract class Programma {
     public Programma(String nome){
         this.nome = nome;
         comandi = new ArrayList<ComandoProgramma>();
+        salvato = false;
+        this.id =-1;
     }
     
     public Simulazione getSimulazione(){
         return this.sim;
+    }
+    
+    public int getId(){
+        return this.id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
     }
     
     public void setNome(String nome){
@@ -32,6 +43,10 @@ public abstract class Programma {
     
     public void setSalvato(boolean bol){
         this.salvato =bol;
+    }
+    
+    public boolean getSalvato(){
+        return this.salvato;
     }
     
     public void setSimulazione(Simulazione sim){
@@ -54,10 +69,21 @@ public abstract class Programma {
     
     public abstract String buildQuerySalva();
     
+    public abstract String buildQuerySalvaInsert();
+    
     public void salvaProgramma(){
         if(!this.isSalvato()){
-            String query = this.buildQuerySalva();
-            DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
+            String query="";
+            if(id!=-1){
+                query = this.buildQuerySalva();
+                DomoSymApplicationController.appCtrl.getDBController().executeUpdate(query);
+            }
+            else{
+                query = this.buildQuerySalvaInsert();
+                int id = DomoSymApplicationController.appCtrl.getDBController().executeInsert(query);
+                this.id = id;                
+            }
+            System.out.println(query);
             for(ComandoProgramma c: this.comandi){
                 c.salvaComando();
             }

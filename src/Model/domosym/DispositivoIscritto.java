@@ -12,12 +12,12 @@ import model.backyard.Evento;
  *
  * @author Gianmarco
  */
-public class Iscrizione {
+public class DispositivoIscritto {
     private DispositivoIntelligente  dispositivo;
     private Evento ev;
     private boolean avviso;
     
-    public Iscrizione(DispositivoIntelligente disp){
+    public DispositivoIscritto(DispositivoIntelligente disp){
         this.dispositivo = disp;
     }
     
@@ -33,5 +33,13 @@ public class Iscrizione {
     
     public DispositivoIntelligente getDispositivo(){
         return this.dispositivo;
+    }
+    
+    public boolean isAvviso(){
+        return avviso;
+    }
+    
+    public boolean isAllarme(){
+        return !avviso;
     }
 }

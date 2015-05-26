@@ -22,7 +22,7 @@ public class ScenarioSimulazione {
     private InfoScenario info;
     private ArrayList<DispositivoIntelligente> dispositivi;  
     private UserInfo autore;
-    private static ScenarioSimulazione istanza= null;
+    private static ScenarioSimulazione istanza;
     private static ScenarioSimulazione importo;
     
     public static ScenarioSimulazione crea(String nome,UserInfo info){
@@ -138,7 +138,7 @@ public class ScenarioSimulazione {
                     + "'"+this.info.getId()+"')");
             //Relazione tra dispositivi
             for(DispositivoIntelligente sottodisp: disp.getSottoDispositivi()){
-                query.add("INSERT INTO dispositivo (nomeCom,nomeSot,idScenario) VALUES"
+                query.add("INSERT INTO relazionedisp (nomeCom,nomeSot,idScenario) VALUES"
                     + " ('"+disp.getNome()+"',"
                     + "'"+sottodisp.getNome()+"',"
                     + "'"+this.info.getId()+"')");

@@ -34,7 +34,11 @@ public class DomoSymApplicationController {
     
     public void setSimCorrente(Simulazione sim){
         this.simCorrente = sim;
-    }    
+    } 
+    
+    public Simulazione getSimCorrente(){
+        return this.simCorrente;
+    }
     
     
     public Simulazione apriSimulazione(InfoScenario qualeScenario) throws Exception{
@@ -64,4 +68,7 @@ public class DomoSymApplicationController {
         this.elencoScenari = elenco;
     }
     
+    public void salvaSimulazione(){
+        this.simCorrente.salvaSimulazione();
+    }
 }

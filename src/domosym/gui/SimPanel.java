@@ -584,7 +584,7 @@ public class SimPanel extends javax.swing.JPanel {
 			 */
 			// @EXAMPLES T2/T3:
 			// BackYardCtrl.salvaScenario();
-			BackYardApplicationController.getAppController().salvaScenario();
+			DomoSymApplicationController.appCtrl.salvaSimulazione();
 		}
     }//GEN-LAST:event_salvaButtonActionPerformed
 
@@ -862,7 +862,7 @@ public class SimPanel extends javax.swing.JPanel {
     private void attivaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attivaButtonActionPerformed
         // TODO add your handling code here:
         Programma p = (Programma) programmiList.getSelectedValue();
-        if(!p.isGenerico()) this.mySim.setSimula((ProgrammaSpecifico)p);
+        if(!p.isGenerico()) this.mySim.aggiungiASimulazione(p);
         ArrayList<Programma> prog = mySim.ottieniElencoProgrammi();
 	this.aggiornaElencoProgrammi(prog);;
     }//GEN-LAST:event_attivaButtonActionPerformed
