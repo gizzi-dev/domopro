@@ -56,7 +56,7 @@ public class SimPanel extends javax.swing.JPanel {
 		comListModel = new DefaultListModel<>();
 		this.comandiList.setModel(comListModel);
 		dispositiviComboModel = new DefaultComboBoxModel<>();
-		this.dispositiviCombo.setModel(dispositiviComboModel);
+		
 	}
 
 	/* Inizializza questo pannello con un dato Scenario di Simulazione
@@ -110,15 +110,20 @@ public class SimPanel extends javax.swing.JPanel {
         nuovaStanzaButton = new javax.swing.JButton();
         eliminaStanzaButton = new javax.swing.JButton();
         modificaComandoButton = new javax.swing.JButton();
-        dispositiviPanel = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        dispositiviCombo = new javax.swing.JComboBox();
+        iscrizioniPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         javax.swing.JPanel simulazioneTitle = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
         javax.swing.JPanel scenarioTitleEP = new javax.swing.JPanel();
         chiudiButton = new javax.swing.JButton();
         salvaButton = new javax.swing.JButton();
         scenarioSP = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         importaButton = new javax.swing.JButton();
         risorseButton = new javax.swing.JButton();
 
@@ -260,24 +265,72 @@ public class SimPanel extends javax.swing.JPanel {
 
         simulazioneTabbed.addTab("Programmi", programmaPanel);
 
-        dispositiviPanel.setLayout(new java.awt.BorderLayout());
-
-        jLabel2.setFont(jLabel2.getFont().deriveFont(jLabel2.getFont().getSize()+35f));
-        jLabel2.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Work in progress");
-        jLabel2.setAlignmentX(0.5F);
-        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        dispositiviPanel.add(jLabel2, java.awt.BorderLayout.CENTER);
-
-        dispositiviCombo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dispositiviComboActionPerformed(evt);
-            }
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
         });
-        dispositiviPanel.add(dispositiviCombo, java.awt.BorderLayout.PAGE_START);
+        jScrollPane3.setViewportView(jList1);
 
-        simulazioneTabbed.addTab("Iscrizioni", dispositiviPanel);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jLabel1.setText("Nome:");
+
+        jLabel2.setText("Collocazione:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addContainerGap(340, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout iscrizioniPanelLayout = new javax.swing.GroupLayout(iscrizioniPanel);
+        iscrizioniPanel.setLayout(iscrizioniPanelLayout);
+        iscrizioniPanelLayout.setHorizontalGroup(
+            iscrizioniPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(iscrizioniPanelLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        iscrizioniPanelLayout.setVerticalGroup(
+            iscrizioniPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        simulazioneTabbed.addTab("Iscrizioni", iscrizioniPanel);
 
         add(simulazioneTabbed, java.awt.BorderLayout.CENTER);
 
@@ -307,7 +360,15 @@ public class SimPanel extends javax.swing.JPanel {
 
         add(simulazioneTitle, java.awt.BorderLayout.NORTH);
 
-        importaButton.setText("Importa...");
+        jButton1.setText("Iscriviti!");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        scenarioSP.add(jButton1);
+
+        importaButton.setText("Imposta Avviso");
         importaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importaButtonActionPerformed(evt);
@@ -315,7 +376,7 @@ public class SimPanel extends javax.swing.JPanel {
         });
         scenarioSP.add(importaButton);
 
-        risorseButton.setText("Risorse...");
+        risorseButton.setText("Imposta Allarme");
         risorseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 risorseButtonActionPerformed(evt);
@@ -407,18 +468,17 @@ public class SimPanel extends javax.swing.JPanel {
 				((CardLayout) this.programmaP.getLayout()).show(programmaP, "Blank");
 			} else { 				
 				Programma p = (Programma) programmiList.getSelectedValue();
-                                if(this.mySim.getSimula()!= null &&this.mySim.getSimula().equals(p)){
-                                    this.attivaButton.setText("Disattiva");                                    
+                                if(this.mySim.getSimula()!= null && this.mySim.getSimula().getNome().equals(p.getNome())){
+                                    this.attivaButton.setText("Disattiva");  
                                 }
-                                if(!p.isGenerico() ){
+                                else if(!p.isGenerico() ){
                                     this.attivaButton.setEnabled(true);
                                     this.attivaButton.setText("Attiva");   
                                 }
                                 else{
                                     this.attivaButton.setEnabled(false);
                                     this.attivaButton.setText("Attiva");
-                                }
-                                
+                                }                                
 				ArrayList<ComandoProgramma> comandi = p.getComandi();
 				String nome = p.getNome();
 
@@ -799,19 +859,6 @@ public class SimPanel extends javax.swing.JPanel {
 		dia.setVisible(true);
     }//GEN-LAST:event_risorseButtonActionPerformed
 
-    private void dispositiviComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dispositiviComboActionPerformed
-		int tabIndex = this.simulazioneTabbed.getSelectedIndex();
-		String tabName = this.simulazioneTabbed.getTitleAt(tabIndex);
-		if (tabName.equals("Dispositivi")) {
-			Object o = this.dispositiviCombo.getSelectedItem();
-			/*if (o == null) {
-				contesto = null;
-			} else {
-				contesto = (Contesto) o;
-			}*/
-		}
-    }//GEN-LAST:event_dispositiviComboActionPerformed
-
     private void attivaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attivaButtonActionPerformed
         // TODO add your handling code here:
         Programma p = (Programma) programmiList.getSelectedValue();
@@ -820,6 +867,10 @@ public class SimPanel extends javax.swing.JPanel {
 	this.aggiornaElencoProgrammi(prog);;
     }//GEN-LAST:event_attivaButtonActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton attivaButton;
@@ -827,13 +878,19 @@ public class SimPanel extends javax.swing.JPanel {
     private javax.swing.JButton chiudiButton;
     private javax.swing.JList comandiList;
     private javax.swing.JLabel datiLabel;
-    private javax.swing.JComboBox dispositiviCombo;
-    private javax.swing.JPanel dispositiviPanel;
     private javax.swing.JPanel editProgrammaP;
     private javax.swing.JPanel elencoProgrammi;
     private javax.swing.JButton eliminaPianoButton;
     private javax.swing.JButton eliminaStanzaButton;
     private javax.swing.JButton importaButton;
+    private javax.swing.JPanel iscrizioniPanel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JList jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton modificaComandoButton;
     private javax.swing.JButton modificaDatiButton;
     private javax.swing.JButton nuovaStanzaButton;

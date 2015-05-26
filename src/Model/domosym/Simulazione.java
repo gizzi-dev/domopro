@@ -25,17 +25,16 @@ public class Simulazione {
     private boolean salvato;
     protected ArrayList<Programma> programmi;
     protected ProgrammaSpecifico simula;
-    private HashMap<DispositivoIntelligente,Evento> allarmi;
-    private HashMap<DispositivoIntelligente,Evento> avvisi;
+    private ArrayList<Iscrizione> dispIscritti;
+    protected Simulazione instanza;
     
     
-    public Simulazione(){        
+    private Simulazione(){        
         this.mod = false;      
         this.salvato = false;
         this.programmi = new ArrayList<>();
-        this.allarmi = new HashMap<>();
-        this.avvisi = new HashMap<>();
-        
+        this.dispIscritti = new ArrayList<>();
+        this.instanza = this;
     }
     
     public static Simulazione load(ScenarioSimulazione scen) throws SQLException{
@@ -124,13 +123,14 @@ public class Simulazione {
     
     public ArrayList<DispositivoIntelligente> ottieniListaDispIscritti(){
         ArrayList<DispositivoIntelligente> elenco = new ArrayList<>();
-        for(Map.Entry<DispositivoIntelligente,Evento> allarme: this.allarmi.entrySet()){
-                elenco.add(allarme.getKey());     
-        }
-        for(Map.Entry<DispositivoIntelligente,Evento> avviso: this.avvisi.entrySet()){
-                elenco.add(avviso.getKey());     
-        }
+        for(Iscrizione i: this.dispIscritti){
+            elenco.add(i.getDispositivo());
+        }       
         return elenco;
+    }
+    
+    public ArrayList<DispositivoIntelligente> ottieniElencoDispositivi(){
+        return this.scenario.getDispositivi();
     }
     
     
@@ -297,9 +297,8 @@ public class Simulazione {
     }
    
     public ArrayList<Evento> ottieniListaEventi(){        
-        ArrayList<Evento> elenco = new ArrayList<>();
-        ArrayList<DispositivoIntelligente> dispositivi = this.scenario.getDispositivi();
-        for(DispositivoIntelligente disp: dispositivi){
+        ArrayList<Evento> elenco = new ArrayList<>();        
+        for(DispositivoIntelligente disp: this.ottieniElencoDispositivi()){
             elenco.addAll(disp.richiediEventiDisponibili());
         }
         return elenco;
@@ -312,9 +311,24 @@ public class Simulazione {
         }
         return azioni;
     }
-
-  
     
+    public void aggiungiADispIscritti(String nomeDispositivo){
+        DispositivoIntelligente disp = this.apriDispositivo(nomeDispositivo);
+        Iscrizione in = new Iscrizione(disp);
+        this.dispIscritti.add(in);
+    }
+    
+    public void impostaAvvisi(DispositivoIntelligente disp, Evento ev){
+        for(Iscrizione in : this.dispIscritti){
+            if(in.getDispositivo().getNome().equals(disp.getNome())) in.impostaAvviso(ev);
+        }
+    }
+    
+    public void impostaAllarmi(DispositivoIntelligente disp, Evento ev){
+       for(Iscrizione in : this.dispIscritti){
+            if(in.getDispositivo().getNome().equals(disp.getNome())) in.impostaAllarme(ev);
+        }
+    }    
     
   
 }
