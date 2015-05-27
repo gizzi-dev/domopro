@@ -5,7 +5,7 @@
  */
 package domosym.gui;
 
-import Model.domosym.*;
+import model.domosym.*;
 import backyard.gui.*;
 import model.backyard.Alloggio;
 import model.backyard.ScenarioSimulazione;
@@ -95,6 +95,7 @@ public class SimPanel extends javax.swing.JPanel {
         javax.swing.JPanel pianiSP = new javax.swing.JPanel();
         nuovoPianoButton = new javax.swing.JButton();
         eliminaPianoButton = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         programmaP = new javax.swing.JPanel();
         blankPanel = new javax.swing.JPanel();
         editProgrammaP = new javax.swing.JPanel();
@@ -110,6 +111,7 @@ public class SimPanel extends javax.swing.JPanel {
         nuovaStanzaButton = new javax.swing.JButton();
         eliminaStanzaButton = new javax.swing.JButton();
         modificaComandoButton = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         iscrizioniPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -167,6 +169,9 @@ public class SimPanel extends javax.swing.JPanel {
             }
         });
         pianiSP.add(eliminaPianoButton);
+
+        jButton2.setText("Salva");
+        pianiSP.add(jButton2);
 
         elencoProgrammi.add(pianiSP, java.awt.BorderLayout.SOUTH);
 
@@ -252,6 +257,9 @@ public class SimPanel extends javax.swing.JPanel {
             }
         });
         comandiSP.add(modificaComandoButton);
+
+        jButton3.setText("Salva");
+        comandiSP.add(jButton3);
 
         elencoComandi.add(comandiSP, java.awt.BorderLayout.SOUTH);
 
@@ -348,7 +356,7 @@ public class SimPanel extends javax.swing.JPanel {
         });
         scenarioTitleEP.add(chiudiButton);
 
-        salvaButton.setText("Salva");
+        salvaButton.setText("Salva Simulazione");
         salvaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 salvaButtonActionPerformed(evt);
@@ -698,7 +706,7 @@ public class SimPanel extends javax.swing.JPanel {
                         Orario ora= dia.getOrario();
                         Evento ev = dia.getEvento();
                         
-			if (nome.length() > 0 && az != null && durata >0 && ora != null && (ora.validate() || ev!= null)) {                                
+			if (nome.length() > 0 && az != null && durata >-1 && ora != null && (ora.validate() || ev!= null)) {                                
                                                             
 				boolean modificato = mySim.cambiaNomeComando(com, nome);
                                 boolean modAzione = false;
@@ -885,6 +893,8 @@ public class SimPanel extends javax.swing.JPanel {
     private javax.swing.JButton importaButton;
     private javax.swing.JPanel iscrizioniPanel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;
