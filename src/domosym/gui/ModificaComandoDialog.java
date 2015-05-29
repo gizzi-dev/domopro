@@ -20,6 +20,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import model.backyard.AzioneSemplice;
 import model.backyard.Evento;
 
 /**
@@ -57,6 +58,9 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
     
     public void setAzione(AzioneComando az){
         this.actionComboBox.setSelectedItem((AzioneComando) az);
+        if(az != null){
+            this.setDurata(az.getDurata());
+        }
     }
     public void setAzioni(ArrayList<AzioneComando> az){
         this.actionComboBox.removeAllItems();
@@ -106,6 +110,7 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         this.eventoRadioButton.setSelected(true);
         this.orarioRadioButton.setSelected(false);
         this.orarioFormattedTextField.setEnabled(false);
+         this.eventoComboBox.setEnabled(true);
         this.eventoComboBox.setSelectedItem((Evento)ev);
     }
     
@@ -193,6 +198,11 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         actionLabel.setText("Azione");
 
         actionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        actionComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -254,6 +264,11 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         });
 
         eventoComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        eventoComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eventoComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -381,6 +396,16 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
         this.value = JOptionPane.OK_OPTION;
         this.setVisible(false);
     }//GEN-LAST:event_salvaButtonActionPerformed
+
+    private void eventoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventoComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_eventoComboBoxActionPerformed
+
+    private void actionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionComboBoxActionPerformed
+        // TODO add your handling code here:
+        AzioneSemplice az = (AzioneSemplice)this.actionComboBox.getSelectedItem();
+        if(az!=null && az.getDurata()>-1)this.setDurata(az.getDurata());
+    }//GEN-LAST:event_actionComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
