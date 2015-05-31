@@ -20,8 +20,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JToolTip;
+import model.backyard.Azione;
 import model.backyard.AzioneSemplice;
 import model.backyard.Evento;
+import model.domosym.ProgrammaGenerico;
 
 /**
  *
@@ -227,6 +230,17 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
 
         durataLabel.setText("Durata(Minuti)");
 
+        durataTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                durataTextFieldFocusGained(evt);
+            }
+        });
+        durataTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                durataTextFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -269,6 +283,8 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
                 eventoComboBoxActionPerformed(evt);
             }
         });
+
+        orarioFormattedTextField.setToolTipText("<html>Se l'azione è un programma, l'orario si riferisceal ritardo<br> rispetto a quando verrà avviato<br> il programma specifico in cui è contenuto</html>");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -403,9 +419,27 @@ public class ModificaComandoDialog extends javax.swing.JDialog {
 
     private void actionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionComboBoxActionPerformed
         // TODO add your handling code here:
-        AzioneSemplice az = (AzioneSemplice)this.actionComboBox.getSelectedItem();
-        if(az!=null && az.getDurata()>-1)this.setDurata(az.getDurata());
+        AzioneComando az = (AzioneComando)this.actionComboBox.getSelectedItem();
+        if(az != null){
+            if(az instanceof ProgrammaGenerico){
+                this.setDurata(0);
+                this.durataTextField.setEnabled(false);
+            }
+            else if( az instanceof Azione) {
+                this.setDurata(az.getDurata());
+                this.durataTextField.setEnabled(true);
+            }
+        }
     }//GEN-LAST:event_actionComboBoxActionPerformed
+
+    private void durataTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_durataTextFieldFocusGained
+        // TODO add your handling code here:
+      
+    }//GEN-LAST:event_durataTextFieldFocusGained
+
+    private void durataTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_durataTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_durataTextFieldActionPerformed
 
     /**
      * @param args the command line arguments

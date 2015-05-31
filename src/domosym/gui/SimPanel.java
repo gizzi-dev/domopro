@@ -23,12 +23,16 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import model.backyard.Azione;
 import model.backyard.Evento;
 
 /**
@@ -41,8 +45,9 @@ public class SimPanel extends javax.swing.JPanel {
 	private DomoSym owner;
 	private Alloggio planimetria;
 	private DefaultListModel<Programma> progListModel;
+        private DefaultListModel<DispositivoIntelligente> dispListModel;
 	private DefaultListModel<ComandoProgramma> comListModel;
-	private DefaultComboBoxModel<DispositivoIntelligente> dispositiviComboModel;	
+        private DefaultListModel<String> eventoListModel;
 	private String nomeContesto;
 
 	/**
@@ -55,7 +60,10 @@ public class SimPanel extends javax.swing.JPanel {
 		this.programmiList.setModel(progListModel);
 		comListModel = new DefaultListModel<>();
 		this.comandiList.setModel(comListModel);
-		dispositiviComboModel = new DefaultComboBoxModel<>();
+                dispListModel = new DefaultListModel<>();
+                this.dispIscrittiList.setModel(dispListModel);
+                eventoListModel = new DefaultListModel<>();
+                eventiIscrizioneList.setModel(eventoListModel);
 		
 	}
 
@@ -67,14 +75,20 @@ public class SimPanel extends javax.swing.JPanel {
 		mySim = sim;
 
 		ArrayList<Programma> prog = mySim.ottieniElencoProgrammi();	
-		simulazioneTabbed.setSelectedIndex(0);
-
+		simulazioneTabbed.setSelectedIndex(0);                
 		aggiornaElencoProgrammi(prog);
-		//aggiornaElencoDispositivi(dispositivi);
+                
+                ArrayList<DispositivoIntelligente> dispositivi = mySim.ottieniElencoDispositivi();
+		aggiornaElencoDispositivi(dispositivi);
+                
 
 		// All'inizio nessun piano è selezionato
-		((CardLayout) this.programmaP.getLayout()).show(programmaP, "Blank");
-		this.eliminaPianoButton.setEnabled(false);
+		((CardLayout) this.programmaP.getLayout()).show(programmaP, "Blank");                
+		this.eliminaProgrammaButton.setEnabled(false);
+                this.salvaProgrammaButton.setEnabled(false);
+                //All'inizio nessun dispositivo è seleazionato
+                this.dispositivoP.setVisible(false);
+                
 	}
 
 	/**
@@ -93,10 +107,10 @@ public class SimPanel extends javax.swing.JPanel {
         elencoProgrammi = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         programmiList = new javax.swing.JList();
-        javax.swing.JPanel pianiSP = new javax.swing.JPanel();
-        nuovoPianoButton = new javax.swing.JButton();
-        eliminaPianoButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        javax.swing.JPanel programmiSP = new javax.swing.JPanel();
+        nuovoProgrammaButton = new javax.swing.JButton();
+        eliminaProgrammaButton = new javax.swing.JButton();
+        salvaProgrammaButton = new javax.swing.JButton();
         programmaP = new javax.swing.JPanel();
         blankPanel = new javax.swing.JPanel();
         editProgrammaP = new javax.swing.JPanel();
@@ -112,23 +126,29 @@ public class SimPanel extends javax.swing.JPanel {
         nuovaStanzaButton = new javax.swing.JButton();
         eliminaStanzaButton = new javax.swing.JButton();
         modificaComandoButton = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        salvaComandoButton = new javax.swing.JButton();
         iscrizioniPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        elencoDispositivi = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        dispIscrittiList = new javax.swing.JList();
+        dispositivoP = new javax.swing.JPanel();
+        IscrizioneP = new javax.swing.JPanel();
+        nomeDispLabel = new javax.swing.JLabel();
+        collocDispLabel = new javax.swing.JLabel();
+        nonIscrittoLabel = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        eventiIscrizioneList = new javax.swing.JList();
+        jPanel4 = new javax.swing.JPanel();
+        setAllarmeButton = new javax.swing.JButton();
+        setAvvisoButton = new javax.swing.JButton();
+        iscrivitiButton = new javax.swing.JButton();
         javax.swing.JPanel simulazioneTitle = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
         javax.swing.JPanel scenarioTitleEP = new javax.swing.JPanel();
         chiudiButton = new javax.swing.JButton();
         salvaButton = new javax.swing.JButton();
         scenarioSP = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        importaButton = new javax.swing.JButton();
-        risorseButton = new javax.swing.JButton();
+        attivaSimulazioneButton = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -155,26 +175,31 @@ public class SimPanel extends javax.swing.JPanel {
 
         elencoProgrammi.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        nuovoPianoButton.setLabel("Nuovo...");
-        nuovoPianoButton.addActionListener(new java.awt.event.ActionListener() {
+        nuovoProgrammaButton.setLabel("Nuovo...");
+        nuovoProgrammaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nuovoPianoButtonActionPerformed(evt);
+                nuovoProgrammaButtonActionPerformed(evt);
             }
         });
-        pianiSP.add(nuovoPianoButton);
+        programmiSP.add(nuovoProgrammaButton);
 
-        eliminaPianoButton.setText("Elimina");
-        eliminaPianoButton.addActionListener(new java.awt.event.ActionListener() {
+        eliminaProgrammaButton.setText("Elimina");
+        eliminaProgrammaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eliminaPianoButtonActionPerformed(evt);
+                eliminaProgrammaButtonActionPerformed(evt);
             }
         });
-        pianiSP.add(eliminaPianoButton);
+        programmiSP.add(eliminaProgrammaButton);
 
-        jButton2.setText("Salva");
-        pianiSP.add(jButton2);
+        salvaProgrammaButton.setText("Salva");
+        salvaProgrammaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvaProgrammaButtonActionPerformed(evt);
+            }
+        });
+        programmiSP.add(salvaProgrammaButton);
 
-        elencoProgrammi.add(pianiSP, java.awt.BorderLayout.SOUTH);
+        elencoProgrammi.add(programmiSP, java.awt.BorderLayout.SOUTH);
 
         planimetriaSplit.setLeftComponent(elencoProgrammi);
 
@@ -185,11 +210,11 @@ public class SimPanel extends javax.swing.JPanel {
         blankPanel.setLayout(blankPanelLayout);
         blankPanelLayout.setHorizontalGroup(
             blankPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 456, Short.MAX_VALUE)
+            .addGap(0, 544, Short.MAX_VALUE)
         );
         blankPanelLayout.setVerticalGroup(
             blankPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 216, Short.MAX_VALUE)
+            .addGap(0, 473, Short.MAX_VALUE)
         );
 
         programmaP.add(blankPanel, "Blank");
@@ -259,8 +284,13 @@ public class SimPanel extends javax.swing.JPanel {
         });
         comandiSP.add(modificaComandoButton);
 
-        jButton3.setText("Salva");
-        comandiSP.add(jButton3);
+        salvaComandoButton.setText("Salva Comando");
+        salvaComandoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvaComandoButtonActionPerformed(evt);
+            }
+        });
+        comandiSP.add(salvaComandoButton);
 
         elencoComandi.add(comandiSP, java.awt.BorderLayout.SOUTH);
 
@@ -274,53 +304,145 @@ public class SimPanel extends javax.swing.JPanel {
 
         simulazioneTabbed.addTab("Programmi", programmaPanel);
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        dispIscrittiList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane3.setViewportView(jList1);
+        dispIscrittiList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                dispIscrittiListValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(dispIscrittiList);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout elencoDispositiviLayout = new javax.swing.GroupLayout(elencoDispositivi);
+        elencoDispositivi.setLayout(elencoDispositiviLayout);
+        elencoDispositiviLayout.setHorizontalGroup(
+            elencoDispositiviLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(elencoDispositiviLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        elencoDispositiviLayout.setVerticalGroup(
+            elencoDispositiviLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(elencoDispositiviLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        IscrizioneP.setBackground(new java.awt.Color(255, 255, 102));
+
+        nomeDispLabel.setText("Nome:");
+
+        collocDispLabel.setText("Collocazione:");
+
+        nonIscrittoLabel.setText("<html><b style=\"color:'#993300'\">Non sei ancora iscritto a questo dispositivo</b></html>");
+
+        eventiIscrizioneList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane4.setViewportView(eventiIscrizioneList);
+
+        javax.swing.GroupLayout IscrizionePLayout = new javax.swing.GroupLayout(IscrizioneP);
+        IscrizioneP.setLayout(IscrizionePLayout);
+        IscrizionePLayout.setHorizontalGroup(
+            IscrizionePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(IscrizionePLayout.createSequentialGroup()
+                .addGroup(IscrizionePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(IscrizionePLayout.createSequentialGroup()
+                        .addGroup(IscrizionePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(IscrizionePLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(IscrizionePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(collocDispLabel)
+                                    .addComponent(nomeDispLabel)))
+                            .addGroup(IscrizionePLayout.createSequentialGroup()
+                                .addGap(75, 75, 75)
+                                .addComponent(nonIscrittoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 225, Short.MAX_VALUE))
+                    .addGroup(IscrizionePLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane4)))
+                .addContainerGap())
+        );
+        IscrizionePLayout.setVerticalGroup(
+            IscrizionePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, IscrizionePLayout.createSequentialGroup()
+                .addComponent(nonIscrittoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(nomeDispLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(collocDispLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jLabel1.setText("Nome:");
+        setAllarmeButton.setText("Imposta Allarme");
+        setAllarmeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setAllarmeButtonActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setText("Collocazione:");
+        setAvvisoButton.setText("Imposta Avviso");
+        setAvvisoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setAvvisoButtonActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addContainerGap(340, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
+        iscrivitiButton.setText("Iscriviti!");
+        iscrivitiButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                iscrivitiButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addComponent(iscrivitiButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
+                .addComponent(setAvvisoButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(setAllarmeButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(iscrivitiButton)
+                    .addComponent(setAvvisoButton)
+                    .addComponent(setAllarmeButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout dispositivoPLayout = new javax.swing.GroupLayout(dispositivoP);
+        dispositivoP.setLayout(dispositivoPLayout);
+        dispositivoPLayout.setHorizontalGroup(
+            dispositivoPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(IscrizioneP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(dispositivoPLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        dispositivoPLayout.setVerticalGroup(
+            dispositivoPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dispositivoPLayout.createSequentialGroup()
+                .addComponent(IscrizioneP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout iscrizioniPanelLayout = new javax.swing.GroupLayout(iscrizioniPanel);
@@ -328,15 +450,18 @@ public class SimPanel extends javax.swing.JPanel {
         iscrizioniPanelLayout.setHorizontalGroup(
             iscrizioniPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(iscrizioniPanelLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(elencoDispositivi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dispositivoP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         iscrizioniPanelLayout.setVerticalGroup(
             iscrizioniPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(elencoDispositivi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(iscrizioniPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dispositivoP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         simulazioneTabbed.addTab("Iscrizioni", iscrizioniPanel);
@@ -369,29 +494,13 @@ public class SimPanel extends javax.swing.JPanel {
 
         add(simulazioneTitle, java.awt.BorderLayout.NORTH);
 
-        jButton1.setText("Iscriviti!");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        attivaSimulazioneButton.setText("Attiva Simulazione");
+        attivaSimulazioneButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                attivaSimulazioneButtonActionPerformed(evt);
             }
         });
-        scenarioSP.add(jButton1);
-
-        importaButton.setText("Imposta Avviso");
-        importaButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importaButtonActionPerformed(evt);
-            }
-        });
-        scenarioSP.add(importaButton);
-
-        risorseButton.setText("Imposta Allarme");
-        risorseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                risorseButtonActionPerformed(evt);
-            }
-        });
-        scenarioSP.add(risorseButton);
+        scenarioSP.add(attivaSimulazioneButton);
 
         add(scenarioSP, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
@@ -403,13 +512,20 @@ public class SimPanel extends javax.swing.JPanel {
 		 * che restituisce il valore della variabile di istanza 'salvato'
 		 */
 		int option = JOptionPane.YES_OPTION;
-		if (!mySim.getSalvato()) {
+                boolean salvato = true;
+                for(Programma p: mySim.ottieniElencoProgrammi()){
+                    if(!p.isSalvato()) salvato =false;
+                    for(ComandoProgramma com : p.getComandi()){
+                        if(!com.isSalvato()) salvato = false;
+                    }
+                }
+		if (!mySim.getSalvato() || !salvato) {
 			option = JOptionPane.showConfirmDialog(this.owner, "Sicuro di voler chiudere? \nCi sono informazioni non salvate.",
 				"Attenzione", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		}
 		if (option == JOptionPane.YES_OPTION) // se era gia' salvato o se l'utente ha detto si'
 		{
-			//owner.chiudiScenario(evt);
+			owner.chiudiSimulazione(evt);
 		}
     }//GEN-LAST:event_chiudiButtonActionPerformed
 
@@ -472,7 +588,8 @@ public class SimPanel extends javax.swing.JPanel {
     private void programmiListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_programmiListValueChanged
 		if (!evt.getValueIsAdjusting()) {			
 			int sel = programmiList.getSelectedIndex();
-			this.eliminaPianoButton.setEnabled(sel >= 0);
+			this.eliminaProgrammaButton.setEnabled(sel >= 0);
+                        this.salvaProgrammaButton.setEnabled(sel >= 0);
 			if (sel < 0) {
 				((CardLayout) this.programmaP.getLayout()).show(programmaP, "Blank");
 			} else { 				
@@ -489,8 +606,8 @@ public class SimPanel extends javax.swing.JPanel {
                                     this.attivaButton.setText("Attiva");
                                 }                                
 				ArrayList<ComandoProgramma> comandi = p.getComandi();
+                                
 				String nome = p.getNome();
-
 				// Imposta il lato destro della finestra in modo che visualizzi le informazioni del piano selezionato
 				this.datiLabel.setText("Nome Programma: "+nome);
 				aggiornaElencoComandi(comandi);
@@ -498,9 +615,7 @@ public class SimPanel extends javax.swing.JPanel {
 				// All'inizio nessuna stanza e' selezionata, quindi i pulsanti relativi sono disabilitati
 				this.eliminaStanzaButton.setEnabled(false);
 				this.modificaComandoButton.setEnabled(false);
-                                
-				
-
+                                this.salvaComandoButton.setEnabled(false);
 				// Mostra il pannello con le informazioni del piano selezionato
 				((CardLayout) this.programmaP.getLayout()).show(programmaP, "EditPiano");
 			}
@@ -508,7 +623,7 @@ public class SimPanel extends javax.swing.JPanel {
 		}
     }//GEN-LAST:event_programmiListValueChanged
 
-    private void eliminaPianoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminaPianoButtonActionPerformed
+    private void eliminaProgrammaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminaProgrammaButtonActionPerformed
 		// Ottiene oggetto selezionato nell'elenco
 		Programma p = (Programma) programmiList.getSelectedValue();
 
@@ -525,9 +640,9 @@ public class SimPanel extends javax.swing.JPanel {
 			// Caso in cui il piano non è elimiminabile
 			JOptionPane.showMessageDialog(this, "Non si può eliminare questo programma", "Errore", JOptionPane.ERROR_MESSAGE);
 		}
-    }//GEN-LAST:event_eliminaPianoButtonActionPerformed
+    }//GEN-LAST:event_eliminaProgrammaButtonActionPerformed
 
-    private void nuovoPianoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuovoPianoButtonActionPerformed
+    private void nuovoProgrammaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuovoProgrammaButtonActionPerformed
 		// Chiede il  nome e il livello (e' possibile che l'utente prema cancel rinunciando all'operazione)
 		DatiProgrammaDialog dia = new DatiProgrammaDialog(this.owner);
 		dia.setVisible(true);
@@ -560,7 +675,7 @@ public class SimPanel extends javax.swing.JPanel {
 					 * - getPiani(): ArrayList<Piano>
 					 */
 					ArrayList<Programma> prog = mySim.ottieniElencoProgrammi();
-					this.aggiornaElencoProgrammi(prog);;
+					this.aggiornaElencoProgrammi(prog);
 				} else { // ALternativamente: se viene lanciata una eccezine
 					JOptionPane.showMessageDialog(this, "Nome del programma non disponibile", "Errore", JOptionPane.ERROR_MESSAGE);
 				}
@@ -569,13 +684,14 @@ public class SimPanel extends javax.swing.JPanel {
 				JOptionPane.showMessageDialog(this, "Nome programma non valido", "Errore", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-    }//GEN-LAST:event_nuovoPianoButtonActionPerformed
+    }//GEN-LAST:event_nuovoProgrammaButtonActionPerformed
 
     private void comandiListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_comandiListValueChanged
 		if (!evt.getValueIsAdjusting()) {
 			int sel = comandiList.getSelectedIndex();
 			this.eliminaStanzaButton.setEnabled(sel >= 0);
 			this.modificaComandoButton.setEnabled(sel >= 0);
+                        this.salvaComandoButton.setEnabled(sel >= 0);
 		}
     }//GEN-LAST:event_comandiListValueChanged
 
@@ -678,11 +794,12 @@ public class SimPanel extends javax.swing.JPanel {
 		// Chiede il  nome (e' possibile che l'utente prema cancel rinunciando all'operazione)
                 ComandoProgramma com = (ComandoProgramma) comandiList.getSelectedValue();
 		ModificaComandoDialog dia = new ModificaComandoDialog(this.owner);
-                dia.setNome(com.getNome());
-                dia.setAzione(com.getAzioneComando());
+                dia.setNome(com.getNome());                
                 ArrayList<Evento> eventi = this.mySim.ottieniListaEventi();
                 ArrayList<AzioneComando> azioni = this.mySim.getAzioniComandoDisponibili();
-                dia.setAzioni(azioni);                
+                dia.setAzioni(azioni);   
+                dia.setAzione(com.getAzioneComando());
+                if(com.getAzioneComando() != null && com.getAzioneComando() instanceof Azione) dia.setDurata(com.getAzioneComando().getDurata());
                 dia.setEventi(eventi);
                 if(com.getCondizione()!= null){              
                     if(com.getCondizione() instanceof Evento){
@@ -692,6 +809,7 @@ public class SimPanel extends javax.swing.JPanel {
                         dia.setOrario(((Orario)com.getCondizione()).toString());
                     }
                 }
+                
 		dia.setVisible(true);
 
 		if (dia.getValue() == JOptionPane.OK_OPTION) { // L'utente ha premuto Ok
@@ -723,8 +841,8 @@ public class SimPanel extends javax.swing.JPanel {
                                         
 					Programma p = (Programma) programmiList.getSelectedValue();
 					ArrayList<ComandoProgramma> comandi = p.getComandi();
-					this.aggiornaElencoComandi(comandi);
-                                        com.salvaComando();
+					this.aggiornaElencoComandi(comandi);     
+                                        this.comandiList.setSelectedValue(com, true);
                                     }
                                     else { // ALternativamente: se viene lanciata una eccezione
 					JOptionPane.showMessageDialog(this, "Non puoi aggiungere ad un comando di un programma, lo stesso programma", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -738,106 +856,18 @@ public class SimPanel extends javax.swing.JPanel {
 		}
     }//GEN-LAST:event_modificaComandoButtonActionPerformed
 
-    private void importaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importaButtonActionPerformed
-		/* @MODELINTERACTION qui parte tutto lo UC "Importare"
-		 * Per prima cosa dobbiamo invocare l'operazione "ottieniElementiImportabili"
-		 * ma per farlo ci serve sapere l'utente corrente.
-		 * La view invoca dunque il seguente metodo sull'oggetto Scenario:
-		 * - getAutore(): UserInfo
-		 */
-		// @EXAMPLE T2 & T3:
-		UserInfo uInfo =mySim.getScenario().getInfoScenario().getAutore();
-
-		/* @OPERATIONottieniScenariDiSimulazione
-		 */
-		// @EXAMPLES T2/T3:
-		// ArrayList<InfoScenario> scenari = BackYardCtrl.ottieniElencoScenari(uInfo);
-		 ArrayList<InfoScenario> scenari = null;
-                try {
-                    scenari = BackYardApplicationController.getAppController().OttieniScenariDiSimulazione(uInfo);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, "Impossibile Connettersi al DB", "Errore", JOptionPane.ERROR_MESSAGE);                    
-                }
-
-		// Mostra una finestra in cui scegliere lo scenario da cui importare (l'utente può premere Cancel)
-		DefaultListModel<InfoScenario> lm = new DefaultListModel<InfoScenario>();
-		for (InfoScenario sc : scenari) {
-			lm.addElement(sc);
-		}
-
-		SceltaScenarioDialog dia = new SceltaScenarioDialog(this.owner);
-		dia.setScenari(lm);
-		dia.setVisible(true);
-
-		if (dia.getValue() == JOptionPane.OK_OPTION) // L'utente ha premuto Ok
-		{
-			// Ottieni lo scenario prescelto
-			InfoScenario daScenario = (InfoScenario) dia.getSelectedObject();
-
-			/* @OPERATIONottieniElementiImportabili
-			 * Attenzione: nella GUI il contesto viene mantenuto tramite due variabili
-			 * di istanza
-			 * 1) "contesto" (di tipo Contesto), che è uguale o all'Alloggio dello Scenario, o a uno
-			 * dei Dispositivi, o a null se l'utente sta visualizzando i dispositivi ma 
-			 * non ce n'è ancora nessuno.
-			 * 2) "nomeContesto" (di tipo String), che è "alloggio" o "dispositivo" a seconda del tab
-			 * selezionato.
-			 * L'esempio qui di seguito usa la (1) ma, in base all'implementazione fatta di 
-			 * ottieniElementiImportabili, si può scegliere di usare la (2)
-			 */
-			// @EXAMPLES T2/T3	
-			// ArrayList<Importabile> elenco = BackYardCtrl.ottieniElementiImportabili(daScenario, nomeContesto);
-			ArrayList<Importabile> elenco = null; //= BackYardApplicationController.getAppController().ottieniElementiImportabili(daScenario, contesto);
-
-			// Mostra una finestra in cui scegliere l'elemento da importare (l'utente può premere Cancel)
-			DefaultListModel<Importabile> implm = new DefaultListModel<>();
-			for (Importabile imp : elenco) {
-				implm.addElement(imp);
-			}
-
-			SceltaImportabileDialog impdia = new SceltaImportabileDialog(this.owner);
-			impdia.setImportabili(implm);
-			impdia.setVisible(true);
-
-			if (impdia.getValue() == JOptionPane.OK_OPTION) // L'utente ha premuto Ok
-			{
-				//Ottieni l'elemento prescelto:
-				Importabile imp = (Importabile) impdia.getSelectedObject();
-
-				/* @OPERATIONimporta
-				 * in base a come si è gestito il caso di import non possibile, bisogna o catturare
-				 * l'eccezione o verificare il valore restituito dall'operazione				
-				 */
-				// @EXAMPLES T2/T3	
-				// boolean importato = BackYardCtrl.importa(imp, nomeContesto);
-				boolean importato= true; //= BackYardApplicationController.getAppController().importa(daScenario, myScenario, imp);
-
-				if (importato) // Alternativamente: se NON viene lanciata alcuna eccezione
-				{
-					// se il contesto è l'alloggio, aggiorna l'elenco dei piani
-					if (nomeContesto.equals("alloggio")) {
-						/* @MODELINTERACTION la vista richiama sull'oggetto ScenarioSimulazione
-						 * il seguente metodo necessario al proprio aggiornamento 
-						 * - getPiani(): ArrayList<Piano>
-						 */
-						//ArrayList<Piano> piani = myScenario.getPiani();
-						//this.aggiornaElencoPiani(piani);
-					} else { // se il contesto è il dispositivo, aggiorna l'elenco dei dispositivi
-						/* @MODELINTERACTION la vista richiama sull'oggetto ScenarioSimulazione
-						 * il seguente metodo necessario al proprio aggiornamento 
-						 * - getDispositivi(): ArrayList<DispositivoIntelligente>
-						 */
-						//ArrayList<DispositivoIntelligente> disp = myScenario.getDispositivi();
-						//this.aggiornaElencoDispositivi(disp);
-					}
-
-				} else { // ALternativamente: se viene lanciata una eccezione
-					JOptionPane.showMessageDialog(this, "Elemento non importabile", "Errore", JOptionPane.ERROR_MESSAGE);
-				}
-
-			}
-		}
-    }//GEN-LAST:event_importaButtonActionPerformed
+    private void setAvvisoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setAvvisoButtonActionPerformed
+        DispositivoIntelligente disp = (DispositivoIntelligente) this.dispIscrittiList.getSelectedValue();
+        iscrizioneDialog dia  = new iscrizioneDialog(this.owner);
+        dia.setDispositivo(disp.getNome());        
+        dia.setEventi(mySim.getEventiAccessibili(disp));
+        dia.setVisible(true);
+        if (dia.getValue() == JOptionPane.OK_OPTION) {
+            Evento ev = dia.getEvento();
+            mySim.impostaAvvisi(disp, ev);
+            this.aggiornaListaIscrizioni(disp);
+        }
+    }//GEN-LAST:event_setAvvisoButtonActionPerformed
 
     private void simulazioneTabbedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_simulazioneTabbedStateChanged
 		/* Questa operazione imposta la variabile contesto 
@@ -847,25 +877,21 @@ public class SimPanel extends javax.swing.JPanel {
 		 */
 		int tabIndex = ((JTabbedPane) evt.getSource()).getSelectedIndex();
 		String tabName = ((JTabbedPane) evt.getSource()).getTitleAt(tabIndex);
-		/*if (tabName.equals("Planimetria")) {
-			contesto = planimetria;
-			nomeContesto = "alloggio";
-		} else {
-			int dispIndex = this.dispositiviCombo.getSelectedIndex();
-			if (dispIndex < 0) {
-				contesto = null;
-			} else {
-				contesto = (DispositivoIntelligente) this.dispositiviCombo.getSelectedItem();
-			}
-			nomeContesto = "dispositivo";
-		}*/
+		
     }//GEN-LAST:event_simulazioneTabbedStateChanged
 
-    private void risorseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_risorseButtonActionPerformed
-		GestioneRisorseDialog dia = new GestioneRisorseDialog(this.owner);
-		//dia.setup(myScenario, contesto, nomeContesto);
-		dia.setVisible(true);
-    }//GEN-LAST:event_risorseButtonActionPerformed
+    private void setAllarmeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setAllarmeButtonActionPerformed
+        DispositivoIntelligente disp = (DispositivoIntelligente) this.dispIscrittiList.getSelectedValue();
+        iscrizioneDialog dia  = new iscrizioneDialog(this.owner);
+        dia.setDispositivo(disp.getNome());        
+        dia.setEventi(mySim.getEventiAccessibili(disp));
+        dia.setVisible(true);
+        if (dia.getValue() == JOptionPane.OK_OPTION) {
+            Evento ev = dia.getEvento();
+            mySim.impostaAllarmi(disp, ev);
+            this.aggiornaListaIscrizioni(disp);
+        }
+    }//GEN-LAST:event_setAllarmeButtonActionPerformed
 
     private void attivaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attivaButtonActionPerformed
         // TODO add your handling code here:
@@ -875,79 +901,152 @@ public class SimPanel extends javax.swing.JPanel {
 	this.aggiornaElencoProgrammi(prog);;
     }//GEN-LAST:event_attivaButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void iscrivitiButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iscrivitiButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        DispositivoIntelligente disp= (DispositivoIntelligente)this.dispIscrittiList.getSelectedValue();
+        mySim.aggiungiADispIscritti(disp.getNome());
+        ArrayList<DispositivoIntelligente> dispositivi = mySim.ottieniElencoDispositivi();   
+        this.dispIscrittiListValueChanged(null);
+        
+    }//GEN-LAST:event_iscrivitiButtonActionPerformed
 
+    private void salvaProgrammaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvaProgrammaButtonActionPerformed
+        // TODO add your handling code here:
+        Programma p = (Programma)this.programmiList.getSelectedValue();
+        boolean salvato  = false;
+        if(!p.isSalvato()){            
+            salvato = p.salvaProgramma();
+            if(!salvato)
+                JOptionPane.showMessageDialog(this, "Devi prima salvare la simulazione!", "Errore", JOptionPane.ERROR_MESSAGE);
+        }else{ 
+            JOptionPane.showMessageDialog(this, "Non c'e' nulla da salvare", "Errore", JOptionPane.ERROR_MESSAGE);
+	}
+    }//GEN-LAST:event_salvaProgrammaButtonActionPerformed
+
+    private void salvaComandoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvaComandoButtonActionPerformed
+        // TODO add your handling code here:
+        ComandoProgramma com = (ComandoProgramma) this.comandiList.getSelectedValue();
+        boolean salvato  = false;
+        if(!com.isSalvato()){
+            salvato = com.salvaComando();
+            if(!salvato)
+                JOptionPane.showMessageDialog(this, "Devi prima salvare il programma che lo contiene!", "Errore", JOptionPane.ERROR_MESSAGE);
+        }else{ 
+            JOptionPane.showMessageDialog(this, "Non c'e' nulla da salvare", "Errore", JOptionPane.ERROR_MESSAGE);
+	}
+    }//GEN-LAST:event_salvaComandoButtonActionPerformed
+
+    private void attivaSimulazioneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attivaSimulazioneButtonActionPerformed
+        // TODO add your handling code here:
+         JOptionPane.showMessageDialog(this, "Funzione non ancora attivata", "Errore", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_attivaSimulazioneButtonActionPerformed
+
+    private void dispIscrittiListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_dispIscrittiListValueChanged
+        // TODO add your handling code here:   
+        if(evt== null || evt.getValueIsAdjusting()){
+            DispositivoIntelligente disp = (DispositivoIntelligente) this.dispIscrittiList.getSelectedValue();
+            if(disp!= null){
+                this.nomeDispLabel.setText("Nome: "+disp.getNome());
+                this.collocDispLabel.setText("Collocazione: "+disp.getLuogo().getNome());
+                this.aggiornaListaIscrizioni(disp);
+                dispositivoP.setVisible(true);
+            }
+        }
+        
+    }//GEN-LAST:event_dispIscrittiListValueChanged
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel IscrizioneP;
     private javax.swing.JButton attivaButton;
+    private javax.swing.JButton attivaSimulazioneButton;
     private javax.swing.JPanel blankPanel;
     private javax.swing.JButton chiudiButton;
+    private javax.swing.JLabel collocDispLabel;
     private javax.swing.JList comandiList;
     private javax.swing.JLabel datiLabel;
+    private javax.swing.JList dispIscrittiList;
+    private javax.swing.JPanel dispositivoP;
     private javax.swing.JPanel editProgrammaP;
+    private javax.swing.JPanel elencoDispositivi;
     private javax.swing.JPanel elencoProgrammi;
-    private javax.swing.JButton eliminaPianoButton;
+    private javax.swing.JButton eliminaProgrammaButton;
     private javax.swing.JButton eliminaStanzaButton;
-    private javax.swing.JButton importaButton;
+    private javax.swing.JList eventiIscrizioneList;
+    private javax.swing.JButton iscrivitiButton;
     private javax.swing.JPanel iscrizioniPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JButton modificaComandoButton;
     private javax.swing.JButton modificaDatiButton;
+    private javax.swing.JLabel nomeDispLabel;
+    private javax.swing.JLabel nonIscrittoLabel;
     private javax.swing.JButton nuovaStanzaButton;
-    private javax.swing.JButton nuovoPianoButton;
+    private javax.swing.JButton nuovoProgrammaButton;
     private javax.swing.JPanel programmaP;
     private javax.swing.JPanel programmaPanel;
     private javax.swing.JList programmiList;
-    private javax.swing.JButton risorseButton;
     private javax.swing.JButton salvaButton;
+    private javax.swing.JButton salvaComandoButton;
+    private javax.swing.JButton salvaProgrammaButton;
     private javax.swing.JPanel scenarioSP;
+    private javax.swing.JButton setAllarmeButton;
+    private javax.swing.JButton setAvvisoButton;
     private javax.swing.JTabbedPane simulazioneTabbed;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
-	private void aggiornaElencoProgrammi(ArrayList<Programma> programmi) {
-		this.progListModel.removeAllElements();
-		for (Programma p : programmi) {
-			this.progListModel.addElement(p);
-		}
+    private void aggiornaElencoProgrammi(ArrayList<Programma> programmi) {
+        this.progListModel.removeAllElements();
+        for (Programma p : programmi) {
+                this.progListModel.addElement(p);
+        }
 
-		this.programmiList.clearSelection();
-	}
+        this.programmiList.clearSelection();
+    }
 
-	private void aggiornaElencoComandi(ArrayList<ComandoProgramma> comandi) {
-		this.comListModel.removeAllElements();
-		for (ComandoProgramma com : comandi) {
-			this.comListModel.addElement(com);
-		}
+    private void aggiornaElencoComandi(ArrayList<ComandoProgramma> comandi) {
+        this.comListModel.removeAllElements();
+        for (ComandoProgramma com : comandi) {
+                this.comListModel.addElement(com);
+                if(com.getCondizione() != null && com.getCondizione() instanceof Orario){
+                    System.out.println(com.getCondizione());
+                }
+        }
 
-		this.comandiList.clearSelection();
-	}
+        this.comandiList.clearSelection();
+    }
 
-	private void aggiornaElencoDispositivi(ArrayList<DispositivoIntelligente> dispositivi) {
-		this.dispositiviComboModel.removeAllElements();
-		for (DispositivoIntelligente di : dispositivi) {
-			this.dispositiviComboModel.addElement(di);
-		}
-/*
-		if (this.dispositiviComboModel.getSize() > 0) {
-			this.dispositiviCombo.setSelectedIndex(0);
-			if (contesto != planimetria) {
-				contesto = (DispositivoIntelligente) dispositiviCombo.getSelectedItem();
-			}
-		} else {
-			if (contesto != planimetria) {
-				contesto = null;
-			}
-		}*/
-	}
+    private void aggiornaElencoDispositivi(ArrayList<DispositivoIntelligente> dispositivi) {
+        this.dispListModel.removeAllElements();
+        for(DispositivoIntelligente disp: dispositivi){
+            this.dispListModel.addElement(disp);
+        }
+        this.comandiList.clearSelection();
+    }
+    
+    private void aggiornaListaIscrizioni(DispositivoIntelligente disp){
+        boolean iscritto = false;     
+        for(DispositivoIscritto in : mySim.ottieniListaDispIscritti()){           
+            this.eventoListModel.removeAllElements();
+            if(in.getDispositivo().equals(disp)){
+                //Avvisi
+                for(Entry<Evento,Boolean> ev : in.getIscrizioni().entrySet()){                    
+                    if(ev.getValue())this.eventoListModel.addElement("<html><b style='color:green;backgroundColor:red'>Avviso</b>: "+ev.getKey());
+                }
+                //Allarmi
+                for(Entry<Evento,Boolean> ev : in.getIscrizioni().entrySet()){                    
+                    if(!ev.getValue())this.eventoListModel.addElement("<html><b style='color:red'>Allarme</b>: "+ev.getKey());                    
+                }               
+                iscritto = true;                
+            }
+        }
+        this.iscrivitiButton.setEnabled(!iscritto);
+        this.nonIscrittoLabel.setVisible(!iscritto);
+        this.setAvvisoButton.setEnabled(iscritto);
+        this.setAllarmeButton.setEnabled(iscritto);  
+        this.eventiIscrizioneList.setVisible(iscritto);    
+    }
 }

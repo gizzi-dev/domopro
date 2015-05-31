@@ -253,6 +253,13 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="durataTextField">
+              <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="durataTextFieldFocusGained"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="durataTextFieldActionPerformed"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextField()"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -343,6 +350,9 @@
               </Events>
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="orarioFormattedTextField">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="orarioFormattedTextField.setToolTipText(&quot;&lt;html&gt;Se l&apos;azione &#xe8; un programma, l&apos;orario si riferisceal ritardo&lt;br&gt; rispetto a quando verr&#xe0; avviato&lt;br&gt; il programma specifico in cui &#xe8; contenuto&lt;/html&gt;&quot;);"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

@@ -279,7 +279,7 @@ public class DomoSym extends javax.swing.JFrame {
 		this.scenariList.clearSelection();
 	}
 
-	void chiudiScenario(java.awt.event.ActionEvent evt) {
+	void chiudiSimulazione(java.awt.event.ActionEvent evt) {
 		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "ElencoScenari");
 		
 		this.okButtonActionPerformed(evt);
